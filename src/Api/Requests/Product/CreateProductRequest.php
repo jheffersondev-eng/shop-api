@@ -2,11 +2,10 @@
 
 namespace Src\Api\Requests\Product;
 
-use DateTime;
 use Src\Api\Requests\BaseRequest;
-use Src\Application\Dto\Product\GetProductFilterDto;
+use Src\Application\Dto\Product\CreateProductDto;
 
-class ProductByFilterRequest extends BaseRequest
+class CreateProductRequest extends BaseRequest
 {
     public function authorize(): bool
     {
@@ -18,16 +17,19 @@ class ProductByFilterRequest extends BaseRequest
         $this->normalizeInputs();
 
         $rules = [
-            'id' => 'nullable|integer',
-            'owner_id' => 'nullable|integer',
-            'name' => 'nullable|string',
-            'category_id' => 'nullable|string',
-            'unit_id' => 'nullable|string',
-            'barcode' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-            'user_id_created' => 'nullable|integer',
-            'date_de' => 'nullable|date',
-            'date_ate' => 'nullable|date',
+            'owner_id' => 'required|integer',
+            'name' => 'required|string',
+            'images' => 'required|array',
+            'description' => 'required|string',
+            'category_id' => 'required|integer',
+            'unit_id' => 'required|integer',
+            'barcode' => 'required|string',
+            'is_active' => 'required|boolean',
+            'price' => 'required|numeric',
+            'cost_price' => 'required|numeric',
+            'stock_quantity' => 'required|numeric',
+            'min_quantity' => 'required|numeric',
+            'user_id_created' => 'required|integer',
         ];
 
         return $rules;
@@ -36,9 +38,7 @@ class ProductByFilterRequest extends BaseRequest
     protected function normalizeInputs(): void
     {
         $this->merge([
-            'name' => strtolower($this->input('name')),
-            'date_de' => $this->input('date_de') ? DateTime::createFromFormat('d/m/Y', $this->input('date_de')) : null,
-            'date_ate' => $this->input('date_ate') ? DateTime::createFromFormat('d/m/Y', $this->input('date_ate')) : null,
+            'name' => strtoupper($this->input('name')),
         ]);
     }
 
@@ -46,7 +46,8 @@ class ProductByFilterRequest extends BaseRequest
     {
         return [
             'name.string' => 'O campo Nome deve ser uma string.',
-            'id.integer' => 'O campo ID deve ser um número inteiro.',
+            'images.array' => 'O campo Imagens deve ser um array.',
+            'description.string' => 'O campo Descrição deve ser uma string.',
             'owner_id.integer' => 'O campo Owner ID deve ser um número inteiro.',
             'category_id.integer' => 'O campo Categoria ID deve ser um número inteiro.',
             'unit_id.integer' => 'O campo Unidade ID deve ser um número inteiro.',
@@ -61,30 +62,25 @@ class ProductByFilterRequest extends BaseRequest
             'min_quantity.numeric' => 'O campo Quantidade Mínima deve ser um número.',
             'min_quantity.min' => 'O campo Quantidade Mínima deve ser maior ou igual a 0.',
             'user_id_created.integer' => 'O campo User ID Criado deve ser um número inteiro.',
-            'date_de.date' => 'O campo Data De deve ser uma data válida.', 
-            'date_ate.date' => 'O campo Data Até deve ser uma data válida.',
-            'page.integer' => 'O campo Página deve ser um número inteiro.',
-            'page.min' => 'O campo Página deve ser maior ou igual a 1.',
-            'page_size.integer' => 'O campo Tamanho da Página deve ser um número inteiro.',
-            'page_size.min' => 'O campo Tamanho da Página deve ser maior ou igual a 1.',
         ];
     }
 
-    public function getDto(): GetProductFilterDto
+    public function getDto(): CreateProductDto
     {
-        return new GetProductFilterDto(
-            id: $this->input('id'),
-            ownerId: $this->input('owner_id'),
+        return new CreateProductDto(
             name: $this->input('name'),
+            images: $this->input('images'),
+            description: $this->input('description'),
+            ownerId: $this->input('owner_id'),
             categoryId: $this->input('category_id'),
             unitId: $this->input('unit_id'),
             barcode: $this->input('barcode'),
             isActive: $this->input('is_active'),
+            price: $this->input('price'),
+            costPrice: $this->input('cost_price'),
+            stockQuantity: $this->input('stock_quantity'),
+            minQuantity: $this->input('min_quantity'),
             userIdCreated: $this->input('user_id_created'),
-            dateDe: null,
-            dateAte: null,
-            page: $this->input('page', 1),
-            pageSize: $this->input('page_size', 10),
         );
     }
 }

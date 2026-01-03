@@ -2,7 +2,7 @@
 
 namespace Src\Application\Interfaces\Repositories;
 
-use Src\Application\DTOs\Login\AuthDto;
+use Src\Application\Dto\Login\AuthDto;
 use Src\Infrastructure\Persistence\Models\User;
 
 interface IUserRepository

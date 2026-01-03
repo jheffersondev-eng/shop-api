@@ -2,7 +2,7 @@
 
 namespace Src\Infrastructure\Persistence\Repositories;
 
-use Src\Application\DTOs\Login\AuthDto;
+use Src\Application\Dto\Login\AuthDto;
 use Src\Infrastructure\Persistence\Models\User;
 use Src\Application\Interfaces\Repositories\IUserRepository;
 use Illuminate\Support\Facades\Hash;

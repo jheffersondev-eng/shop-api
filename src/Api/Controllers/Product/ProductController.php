@@ -2,23 +2,38 @@
 
 namespace Src\Api\Controllers\Product;
 
-use Src\Application\Interfaces\Services\IAuthService;
 use Src\Api\Controllers\BaseController;
+use Src\Api\Requests\Product\CreateProductRequest;
 use Src\Api\Requests\Product\ProductByFilterRequest;
+use Src\Application\Interfaces\Services\IProductService;
 
 class ProductController extends BaseController
 {
     public function __construct(
-        private IAuthService $authService
+        private IProductService $productService
     ) {}
 
-    public function getProductByFilter(ProductByFilterRequest $productByFilterRequest)
+    public function getProductsByFilter(ProductByFilterRequest $request)
     {        
-        $dto = $productByFilterRequest->getDto();
+        $dto = $request->getDto();
+        $result = $this->productService->getProductsByFilter($dto);
 
-        return $this->execute(
-            callback: fn() => $this->authService->authenticate($dto),
-            statusCodeSuccess: 200
-        );
+        return response()->json([
+            'success' => $result->success,
+            'data' => $result->data,
+            'message' => $result->message
+        ], 200);
+    }
+
+    public function createProduct(CreateProductRequest $request)
+    {
+        $dto = $request->getDto();
+        $result = $this->productService->getProductsByFilter($dto);
+
+        return response()->json([
+            'success' => $result->success,
+            'data' => $result->data,
+            'message' => $result->message
+        ], 200);
     }
 }

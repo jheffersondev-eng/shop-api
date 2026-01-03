@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Application\DTOs\Login;
+namespace Src\Application\Dto\Login;
 
 class AuthResponseDto
 {

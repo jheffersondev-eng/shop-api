@@ -3,7 +3,7 @@
 namespace Src\Api\Requests\Auth;
 
 use Src\Api\Requests\BaseRequest;
-use Src\Application\DTOs\Login\AuthDto;
+use Src\Application\Dto\Login\AuthDto;
 
 class AuthRequest extends BaseRequest
 {

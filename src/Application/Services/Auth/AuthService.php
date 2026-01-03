@@ -2,8 +2,8 @@
 
 namespace Src\Application\Services\Auth;
 
-use Src\Application\DTOs\Login\AuthDto;
-use Src\Application\DTOs\ServiceResult;
+use Src\Application\Dto\Login\AuthDto;
+use Src\Application\Services\ServiceResult;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Src\Application\Interfaces\Repositories\IUserRepository;

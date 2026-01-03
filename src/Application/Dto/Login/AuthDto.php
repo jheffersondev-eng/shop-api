@@ -1,8 +1,8 @@
 <?php
 
-namespace Src\Application\DTOs\Product;
+namespace Src\Application\Dto\Login;
 
-class ProductDto
+class AuthDto
 {
     public function __construct(
         public string $email,

@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return response()->json([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => $e->getMessage() ?: 'Erro interno do servidor',
                 ], 500);
             }
         });

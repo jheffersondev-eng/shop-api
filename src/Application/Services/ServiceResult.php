@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Application\DTOs;
+namespace Src\Application\Services;
 
 class ServiceResult
 {

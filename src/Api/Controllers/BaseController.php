@@ -2,7 +2,7 @@
 
 namespace Src\Api\Controllers;
 
-use Src\Application\DTOs\ServiceResult;
+use Src\Application\Services\ServiceResult;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
