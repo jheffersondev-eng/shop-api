@@ -19,7 +19,6 @@ class ProductByFilterRequest extends BaseRequest
 
         $rules = [
             'id' => 'nullable|integer',
-            'owner_id' => 'nullable|integer',
             'name' => 'nullable|string',
             'category_id' => 'nullable|string',
             'unit_id' => 'nullable|string',
@@ -47,7 +46,6 @@ class ProductByFilterRequest extends BaseRequest
         return [
             'name.string' => 'O campo Nome deve ser uma string.',
             'id.integer' => 'O campo ID deve ser um número inteiro.',
-            'owner_id.integer' => 'O campo Owner ID deve ser um número inteiro.',
             'category_id.integer' => 'O campo Categoria ID deve ser um número inteiro.',
             'unit_id.integer' => 'O campo Unidade ID deve ser um número inteiro.',
             'barcode.string' => 'O campo Código de Barras deve ser uma string.',
@@ -74,7 +72,7 @@ class ProductByFilterRequest extends BaseRequest
     {
         return new GetProductFilterDto(
             id: $this->input('id'),
-            ownerId: $this->input('owner_id'),
+            ownerId: null,
             name: $this->input('name'),
             categoryId: $this->input('category_id'),
             unitId: $this->input('unit_id'),

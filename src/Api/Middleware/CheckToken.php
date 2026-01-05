@@ -4,6 +4,7 @@ namespace Src\Api\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Src\Api\Responses\ApiResponse;
 
@@ -25,33 +26,22 @@ class CheckToken
             return ApiResponse::unauthorized('Token não fornecido');
         }
 
-        // Validate the token
+        // Validate and authenticate the token
         try {
-            if (!$this->isValidToken($token)) {
+            $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            
+            if (!$personalAccessToken || !$personalAccessToken->tokenable) {
                 \Illuminate\Support\Facades\Log::warning('Token inválido: ' . substr($token, 0, 10));
                 return ApiResponse::unauthorized('Token inválido ou expirado');
             }
+
+            // Autenticar o usuário no guard padrão
+            Auth::setUser($personalAccessToken->tokenable);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Erro ao validar token: ' . $e->getMessage());
             return ApiResponse::unauthorized('Erro ao validar token');
         }
 
         return $next($request);
-    }
-
-    /**
-     * Validate the bearer token using Sanctum
-     *
-     * @param string $token
-     * @return bool
-     */
-    private function isValidToken(string $token): bool
-    {
-        try {
-            $personalAccessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
-            return $personalAccessToken && $personalAccessToken->tokenable !== null;
-        } catch (\Exception $e) {
-            return false;
-        }
     }
 }

@@ -1,22 +1,22 @@
 <?php
 
-namespace Src\Api\Controllers\Product;
+namespace Src\Api\Controllers\Unit;
 
 use Src\Api\Controllers\BaseController;
-use Src\Api\Requests\Product\CreateProductRequest;
-use Src\Api\Requests\Product\ProductByFilterRequest;
-use Src\Application\Interfaces\Services\IProductService;
+use Src\Api\Requests\Unit\CreateUnitRequest;
+use Src\Api\Requests\Unit\UnitByFilterRequest;
+use Src\Application\Interfaces\Services\IUnitService;
 
-class ProductController extends BaseController
+class UnitController extends BaseController
 {
     public function __construct(
-        private IProductService $productService
+        private IUnitService $unitService
     ) {}
 
-    public function getProductsByFilter(ProductByFilterRequest $request)
+    public function getUnitsByFilter(UnitByFilterRequest $request)
     {        
         $dto = $request->getDto();
-        $result = $this->productService->getProductsByFilter($dto);
+        $result = $this->unitService->getUnitsByFilter($dto);
 
         return response()->json([
             'success' => $result->success,
@@ -25,10 +25,10 @@ class ProductController extends BaseController
         ], 200);
     }
 
-    public function createProduct(CreateProductRequest $request)
+    public function createUnit(CreateUnitRequest $request)
     {
         $dto = $request->getDto();
-        $result = $this->productService->createProduct($dto);
+        $result = $this->unitService->createUnit($dto);
 
         return response()->json([
             'success' => $result->success,
@@ -37,9 +37,10 @@ class ProductController extends BaseController
         ], 201);
     }
 
-    public function deleteProduct(int $id)
+    public function updateUnit(int $id, CreateUnitRequest $request)
     {
-        $result = $this->productService->deleteProduct($id);
+        $dto = $request->getDto();
+        $result = $this->unitService->updateUnit($id, $dto);
 
         return response()->json([
             'success' => $result->success,
@@ -48,10 +49,9 @@ class ProductController extends BaseController
         ], 200);
     }
 
-    public function updateProduct(int $id, CreateProductRequest $request)
+    public function deleteUnit(int $id)
     {
-        $dto = $request->getDto();
-        $result = $this->productService->updateProduct($id, $dto);
+        $result = $this->unitService->deleteUnit($id);
 
         return response()->json([
             'success' => $result->success,

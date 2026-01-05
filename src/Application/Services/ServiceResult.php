@@ -7,10 +7,10 @@ class ServiceResult
     public function __construct(
         public bool $success,
         public mixed $data = null,
-        public ?string $message = null
+        public string|null $message = null
     ) {}
     
-    public static function ok(mixed $data = null, ?string $message = null): self
+    public static function ok(mixed $data = null, string|null $message = null): self
     {
         return new self(true, $data, $message);
     }

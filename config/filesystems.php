@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        'shop_storage' => [
+            'driver' => 'local',
+            'root' => env('SHOP_STORAGE_PATH', 'C:\\xampp\\htdocs\\www\\shop\\public\\storage'),
+            'url' => env('SHOP_STORAGE_URL', 'http://shop.local/storage'),
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
     ],
 
     /*

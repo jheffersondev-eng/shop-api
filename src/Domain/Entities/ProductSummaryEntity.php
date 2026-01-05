@@ -1,13 +1,14 @@
 <?php
 
-namespace Src\Application\Dto\Product;
+namespace Src\Domain\Entities;
 
-class CreateProductDto
+class ProductSummaryEntity
 {
     public function __construct(
+        public int $id,
         public string $name,
-        public array $images,
-        public string $description,
+        public string|null $description,
+        public int $ownerId,
         public int $categoryId,
         public int $unitId,
         public string $barcode,
@@ -16,8 +17,9 @@ class CreateProductDto
         public float $costPrice,
         public int $stockQuantity,
         public int $minQuantity,
-        public int|null $ownerId,
-        public int|null $userIdCreated,
-        public int|null $userIdUpdated
+        public int $userIdCreated,
+        public int|null $userIdUpdated,
+        public string $createdAt,
+        public string $updatedAt,
     ) {}
 }
