@@ -3,10 +3,13 @@
 namespace Src\Api\Requests\Product;
 
 use Src\Api\Requests\BaseRequest;
+use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Product\CreateProductDto;
 
 class CreateProductRequest extends BaseRequest
 {
+    use GetAuthenticatedUser;
+
     public function authorize(): bool
     {
         return true;
@@ -17,10 +20,10 @@ class CreateProductRequest extends BaseRequest
         $this->normalizeInputs();
 
         $rules = [
-            'owner_id' => 'required|integer',
             'name' => 'required|string',
-            'images' => 'required|array',
-            'description' => 'required|string',
+            'images' => 'required',
+            'images.*' => 'file|mimes:jpg,jpeg,png,webp|max:2048',
+            'description' => 'nullable|string',
             'category_id' => 'required|integer',
             'unit_id' => 'required|integer',
             'barcode' => 'required|string',
@@ -29,7 +32,6 @@ class CreateProductRequest extends BaseRequest
             'cost_price' => 'required|numeric',
             'stock_quantity' => 'required|numeric',
             'min_quantity' => 'required|numeric',
-            'user_id_created' => 'required|integer',
         ];
 
         return $rules;
@@ -46,7 +48,7 @@ class CreateProductRequest extends BaseRequest
     {
         return [
             'name.string' => 'O campo Nome deve ser uma string.',
-            'images.array' => 'O campo Imagens deve ser um array.',
+            'images.required' => 'O campo Imagens é obrigatório.',
             'description.string' => 'O campo Descrição deve ser uma string.',
             'owner_id.integer' => 'O campo Owner ID deve ser um número inteiro.',
             'category_id.integer' => 'O campo Categoria ID deve ser um número inteiro.',
@@ -69,9 +71,8 @@ class CreateProductRequest extends BaseRequest
     {
         return new CreateProductDto(
             name: $this->input('name'),
-            images: $this->input('images'),
+            images: $this->file('images'),
             description: $this->input('description'),
-            ownerId: $this->input('owner_id'),
             categoryId: $this->input('category_id'),
             unitId: $this->input('unit_id'),
             barcode: $this->input('barcode'),
@@ -80,7 +81,9 @@ class CreateProductRequest extends BaseRequest
             costPrice: $this->input('cost_price'),
             stockQuantity: $this->input('stock_quantity'),
             minQuantity: $this->input('min_quantity'),
-            userIdCreated: $this->input('user_id_created'),
+            ownerId: $this->getOwnerId(),
+            userIdCreated: $this->getUserId(),
+            userIdUpdated: null
         );
     }
 }

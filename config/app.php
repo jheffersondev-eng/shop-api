@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Namespace
+    |--------------------------------------------------------------------------
+    |
+    | This namespace is used by the Laravel artisan command to generate paths
+    | that match your package structure so that it's easier to keep things
+    | organized. Change this to match your structure when you start creating
+    | additional namespaces within your application.
+    |
+    */
+
+    'namespace' => 'Src',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

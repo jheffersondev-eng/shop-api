@@ -3,11 +3,20 @@
 namespace Src\Infrastructure\Persistence\Repositories;
 
 use Exception;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Src\Application\Dto\Product\GetProductFilterDto;
+use Src\Application\Exceptions\ProductNotFoundException;
+use Src\Application\Exceptions\ProductImageNotFoundException;
 use Src\Application\Interfaces\Repositories\IProductRepository;
 use Src\Application\Mappers\ProductsMapper;
 use Illuminate\Support\Facades\Log;
+use Src\Application\Dto\Product\CreateProductDto;
+use Src\Application\Mappers\GenericMapper;
+use Src\Infrastructure\Persistence\Models\Product;
+use Src\Infrastructure\Persistence\Models\ProductImage;
+use Src\Domain\Entities\ProductSummaryEntity;
 
 class ProductRepository implements IProductRepository
 {
@@ -28,17 +37,18 @@ class ProductRepository implements IProductRepository
             ->leftJoin('user_details as udc', 'p.user_id_created', '=', 'udc.id')
             ->leftJoin('user_details as udu', 'p.user_id_updated', '=', 'udu.id')
             ->select(
-                'p.id',
+                'p.id as id',
                 'p.name',
+                'p.description',
                 'p.barcode',
                 'p.is_active',
                 'p.price',
                 'p.cost_price',
                 'p.stock_quantity',
                 'p.min_quantity',
-                'p.user_id_created',
-                'p.user_id_updated',
-                'p.user_id_deleted',
+                'p.user_id_created as user_id_created',
+                'p.user_id_updated as user_id_updated',
+                'p.user_id_deleted as user_id_deleted',
                 'p.created_at',
                 'p.updated_at',
                 'p.deleted_at',
@@ -46,6 +56,8 @@ class ProductRepository implements IProductRepository
                 'c.name as category_name',
                 'u.id as unit_id',
                 'u.name as unit_name',
+                'u.abbreviation as unit_abbreviation',
+                'u.format as unit_format',
                 'udo.id as owner_id',
                 'udo.name as owner_name',
                 'udc.id as user_created_id',
@@ -75,14 +87,12 @@ class ProductRepository implements IProductRepository
         });
     }
 
-    public function applyFilter($query, GetProductFilterDto $getProductFilterDto)
+    private function applyFilter($query, GetProductFilterDto $getProductFilterDto)
     {
+        $query->where('p.owner_id', $getProductFilterDto->ownerId);
+
         if ($getProductFilterDto->id) {
             $query->where('p.id', $getProductFilterDto->id);
-        }
-
-        if ($getProductFilterDto->ownerId) {
-            $query->where('p.owner_id', $getProductFilterDto->ownerId);
         }
 
         if ($getProductFilterDto->name) {
@@ -133,5 +143,114 @@ class ProductRepository implements IProductRepository
             ->where('product_id', $productId)
             ->get()
             ->toArray();
+    }
+
+    public function createProduct(CreateProductDto $createProductDto): ProductSummaryEntity
+    {
+        try {
+            $product = Product::create([
+                'name' => $createProductDto->name,
+                'description' => $createProductDto->description,
+                'owner_id' => $createProductDto->ownerId,
+                'category_id' => $createProductDto->categoryId,
+                'unit_id' => $createProductDto->unitId,
+                'barcode' => $createProductDto->barcode,
+                'is_active' => $createProductDto->isActive,
+                'price' => $createProductDto->price,
+                'cost_price' => $createProductDto->costPrice,
+                'stock_quantity' => $createProductDto->stockQuantity,
+                'min_quantity' => $createProductDto->minQuantity,
+                'user_id_created' => $createProductDto->userIdCreated,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $productSummaryEntity = GenericMapper::map($product, ProductSummaryEntity::class);
+
+            return $productSummaryEntity; 
+        } catch (Exception $e) {
+            Log::error('Erro ao criar produto: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function createProductImages(int $productId, array $images): array
+    {
+        $createdImages = [];
+
+        foreach ($images as $image) {
+            if ($image instanceof UploadedFile) {
+                $imagePath = $image->store('products', 'shop_storage');
+                $createdImage = ProductImage::create([
+                    'product_id' => $productId,
+                    'image' => $imagePath,
+                ]);
+                $createdImages[] = $createdImage->toArray();
+            }
+        }
+
+        return $createdImages;
+    }
+
+    public function deleteProduct(int $productId, int $userIdDeleted): bool
+    {
+        $product = Product::where('id', $productId)->first();
+        if (!$product) {
+            throw new ProductNotFoundException('Produto já foi deletado.');
+        }
+
+        $product->deleted_at = now();
+        $product->user_id_deleted = $userIdDeleted;
+
+        $product->save();
+
+        return true;
+    }
+
+    public function deleteProductImage(int $imageId): bool
+    {
+        $image = ProductImage::where('id', $imageId)->first();
+
+        if (!$image) {
+            throw new ProductImageNotFoundException();
+        }
+
+        if ($image->image && Storage::disk('shop_storage')->exists($image->image)) {
+            Storage::disk('shop_storage')->delete($image->image);
+        }
+
+        $image->delete();
+
+        return true;
+    }
+
+    public function updateProduct(int $productId, CreateProductDto $createProductDto):  ProductSummaryEntity
+    {
+        $product = Product::where('id', $productId)
+                    ->where('owner_id', $createProductDto->ownerId)
+                    ->first();
+
+        if (!$product) {
+            throw new ProductNotFoundException();
+        }
+
+        $product->update([
+            'name' => $createProductDto->name,
+            'description' => $createProductDto->description,
+            'category_id' => $createProductDto->categoryId,
+            'unit_id' => $createProductDto->unitId,
+            'barcode' => $createProductDto->barcode,
+            'is_active' => $createProductDto->isActive,
+            'price' => $createProductDto->price,
+            'cost_price' => $createProductDto->costPrice,
+            'stock_quantity' => $createProductDto->stockQuantity,
+            'min_quantity' => $createProductDto->minQuantity,
+            'user_id_updated' => $createProductDto->userIdUpdated,
+            'updated_at' => now(),
+        ]);
+
+        $productSummaryEntity = GenericMapper::map($product, ProductSummaryEntity::class);
+        
+        return $productSummaryEntity;
     }
 }

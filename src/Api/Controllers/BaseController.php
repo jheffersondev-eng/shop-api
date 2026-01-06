@@ -53,7 +53,7 @@ abstract class BaseController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Erro interno ao processar a requisição',
+                'message' => 'Erro interno ao processar a requisição: ' . $e->getMessage(),
             ], $statusCodeError);
         }
     }
