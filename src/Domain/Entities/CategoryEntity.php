@@ -12,7 +12,7 @@ class CategoryEntity
         public string $name,
         public string $description,
         public UserSummaryEntity $userCreated,
-        public UserSummaryEntity $userUpdated,
+        public UserSummaryEntity|null $userUpdated,
         public DateTime $createdAt,
         public DateTime $updatedAt
     ) {}

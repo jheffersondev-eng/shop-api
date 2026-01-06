@@ -1,0 +1,58 @@
+<?php
+
+namespace Src\Api\Requests\Category;
+
+use Src\Api\Requests\BaseRequest;
+use Src\Api\Requests\Traits\GetAuthenticatedUser;
+use Src\Application\Dto\Category\GetCategoryFilterDto;
+
+class CategoryByFilterRequest extends BaseRequest
+{
+    use GetAuthenticatedUser;
+
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        $this->normalizeInputs();
+
+        $rules = [
+            'id' => 'nullable|integer',
+            'name' => 'nullable|string',
+            'description' => 'nullable|string',
+        ];
+
+        return $rules;
+    }
+
+    protected function normalizeInputs(): void
+    {
+        $this->merge([
+            'name' => strtolower($this->input('name')),
+        ]);
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.string' => 'O campo Nome deve ser uma string.',
+            'id.integer' => 'O campo ID deve ser um número inteiro.',
+            'description.string' => 'O campo Descrição deve ser uma string.',
+        ];
+    }
+
+    public function getDto(): GetCategoryFilterDto
+    {
+        return new GetCategoryFilterDto(
+            id: $this->input('id'),
+            ownerId: $this->getOwnerId(),
+            name: $this->input('name'),
+            description: $this->input('description'),
+            page: $this->input('page', 1),
+            pageSize: $this->input('page_size', 10),
+        );
+    }
+}
