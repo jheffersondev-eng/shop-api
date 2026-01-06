@@ -4,10 +4,13 @@ namespace Src\Api\Requests\Unit;
 
 use DateTime;
 use Src\Api\Requests\BaseRequest;
+use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Unit\GetUnitFilterDto;
 
 class UnitByFilterRequest extends BaseRequest
 {
+    use GetAuthenticatedUser;
+
     public function authorize(): bool
     {
         return true;
@@ -48,7 +51,7 @@ class UnitByFilterRequest extends BaseRequest
     {
         return new GetUnitFilterDto(
             id: $this->input('id'),
-            ownerId: null,
+            ownerId: $this->getOwnerId(),
             name: $this->input('name'),
             abbreviation: $this->input('abbreviation'),
             format: $this->input('format'),

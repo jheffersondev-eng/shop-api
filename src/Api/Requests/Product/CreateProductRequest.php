@@ -3,10 +3,13 @@
 namespace Src\Api\Requests\Product;
 
 use Src\Api\Requests\BaseRequest;
+use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Product\CreateProductDto;
 
 class CreateProductRequest extends BaseRequest
 {
+    use GetAuthenticatedUser;
+
     public function authorize(): bool
     {
         return true;
@@ -78,8 +81,8 @@ class CreateProductRequest extends BaseRequest
             costPrice: $this->input('cost_price'),
             stockQuantity: $this->input('stock_quantity'),
             minQuantity: $this->input('min_quantity'),
-            ownerId: null,
-            userIdCreated: null,
+            ownerId: $this->getOwnerId(),
+            userIdCreated: $this->getUserId(),
             userIdUpdated: null
         );
     }

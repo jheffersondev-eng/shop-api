@@ -7,6 +7,7 @@ class ProductSummaryEntity
     public function __construct(
         public int $id,
         public string $name,
+        public array|null $images,
         public string|null $description,
         public int $ownerId,
         public int $categoryId,

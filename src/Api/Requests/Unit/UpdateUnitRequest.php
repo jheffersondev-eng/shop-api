@@ -6,7 +6,7 @@ use Src\Api\Requests\BaseRequest;
 use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Unit\CreateUnitDto;
 
-class CreateUnitRequest extends BaseRequest
+class UpdateUnitRequest extends BaseRequest
 {
     use GetAuthenticatedUser;
 
@@ -51,8 +51,8 @@ class CreateUnitRequest extends BaseRequest
             abbreviation: $this->input('abbreviation'),
             format: $this->input('format'),
             ownerId: $this->getOwnerId(),
-            userIdCreated: $this->getUserId(),
-            userIdUpdated: null
+            userIdCreated: null,
+            userIdUpdated: $this->getUserId()
         );
     }
 }

@@ -7,17 +7,17 @@ use DateTime;
 class GetProductFilterDto
 {
     public function __construct(
-        public int|null $id,
-        public int|null $ownerId,
-        public string|null $name,
-        public int|null $categoryId,
-        public int|null $unitId,
-        public string|null $barcode,
-        public bool|null $isActive,
-        public int|null $userIdCreated,
-        public DateTime|null $dateDe,
-        public DateTime|null $dateAte,
-        public int $page = 1,
-        public int $pageSize = 10
+        public readonly int|null $id,
+        public readonly int|null $ownerId,
+        public readonly string|null $name,
+        public readonly int|null $categoryId,
+        public readonly int|null $unitId,
+        public readonly string|null $barcode,
+        public readonly bool|null $isActive,
+        public readonly int|null $userIdCreated,
+        public readonly DateTime|null $dateDe,
+        public readonly DateTime|null $dateAte,
+        public readonly int $page = 1,
+        public readonly int $pageSize = 10
     ) {}
 }

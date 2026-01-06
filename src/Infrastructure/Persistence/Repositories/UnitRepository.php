@@ -5,6 +5,7 @@ namespace Src\Infrastructure\Persistence\Repositories;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Src\Application\Dto\Unit\GetUnitFilterDto;
+use Src\Application\Exceptions\UnitNotFoundException;
 use Src\Application\Interfaces\Repositories\IUnitRepository;
 use Illuminate\Support\Facades\Log;
 use Src\Application\Dto\Unit\CreateUnitDto;
@@ -78,7 +79,7 @@ class UnitRepository implements IUnitRepository
         return $query;
     }
 
-    public function createUnit(CreateUnitDto $createUnitDto): array
+    public function createUnit(CreateUnitDto $createUnitDto): UnitSummaryEntity
     {
         try {
             $unit = Unit::create([
@@ -91,22 +92,24 @@ class UnitRepository implements IUnitRepository
                 'updated_at' => now(),
             ]);
 
-            return $unit->toArray();
+            $unitSummaryEntity = GenericMapper::map($unit, UnitSummaryEntity::class);
+
+            return $unitSummaryEntity;
         } catch (Exception $e) {
             Log::error('Erro ao criar produto: ' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function deleteUnit(int $unitId, int $userId): bool
+    public function deleteUnit(int $unitId, int $userIdDeleted): bool
     {
         $unit = Unit::where('id', $unitId)->first();
 
         if (!$unit) {
-            throw new Exception('Unidade já foi deletada.');
+            throw new UnitNotFoundException('Unidade já foi deletada.');
         }
 
-        $unit->user_id_deleted = $userId;
+        $unit->user_id_updated = $userIdDeleted;
         $unit->deleted_at = now();
 
         $unit->save();
@@ -121,7 +124,7 @@ class UnitRepository implements IUnitRepository
                     ->first();
 
         if (!$unit) {
-            throw new Exception('Unidade não encontrada.');
+            throw new UnitNotFoundException();
         }
 
         $unit->update([

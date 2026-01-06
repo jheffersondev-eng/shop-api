@@ -5,7 +5,10 @@ namespace Src\Infrastructure\Persistence\Repositories;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Src\Application\Dto\Product\GetProductFilterDto;
+use Src\Application\Exceptions\ProductNotFoundException;
+use Src\Application\Exceptions\ProductImageNotFoundException;
 use Src\Application\Interfaces\Repositories\IProductRepository;
 use Src\Application\Mappers\ProductsMapper;
 use Illuminate\Support\Facades\Log;
@@ -142,7 +145,7 @@ class ProductRepository implements IProductRepository
             ->toArray();
     }
 
-    public function createProduct(CreateProductDto $createProductDto): array
+    public function createProduct(CreateProductDto $createProductDto): ProductSummaryEntity
     {
         try {
             $product = Product::create([
@@ -162,7 +165,9 @@ class ProductRepository implements IProductRepository
                 'updated_at' => now(),
             ]);
 
-            return $product->toArray();
+            $productSummaryEntity = GenericMapper::map($product, ProductSummaryEntity::class);
+
+            return $productSummaryEntity; 
         } catch (Exception $e) {
             Log::error('Erro ao criar produto: ' . $e->getMessage());
             throw $e;
@@ -187,17 +192,16 @@ class ProductRepository implements IProductRepository
         return $createdImages;
     }
 
-    public function deleteProduct(int $productId, int $userId): bool
+    public function deleteProduct(int $productId, int $userIdDeleted): bool
     {
         $product = Product::where('id', $productId)->first();
-
         if (!$product) {
-            throw new Exception('Produto já foi deletado.');
+            throw new ProductNotFoundException('Produto já foi deletado.');
         }
 
-        $product->user_id_deleted = $userId;
         $product->deleted_at = now();
-        
+        $product->user_id_deleted = $userIdDeleted;
+
         $product->save();
 
         return true;
@@ -208,7 +212,11 @@ class ProductRepository implements IProductRepository
         $image = ProductImage::where('id', $imageId)->first();
 
         if (!$image) {
-            throw new Exception('Imagem do produto não encontrada.');
+            throw new ProductImageNotFoundException();
+        }
+
+        if ($image->image && Storage::disk('shop_storage')->exists($image->image)) {
+            Storage::disk('shop_storage')->delete($image->image);
         }
 
         $image->delete();
@@ -223,7 +231,7 @@ class ProductRepository implements IProductRepository
                     ->first();
 
         if (!$product) {
-            throw new Exception('Produto não encontrado.');
+            throw new ProductNotFoundException();
         }
 
         $product->update([

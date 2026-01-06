@@ -2,9 +2,11 @@
 
 namespace Src\Api\Controllers\Product;
 
+use Illuminate\Support\Facades\Auth;
 use Src\Api\Controllers\BaseController;
 use Src\Api\Requests\Product\CreateProductRequest;
 use Src\Api\Requests\Product\ProductByFilterRequest;
+use Src\Api\Requests\Product\UpdateProductRequest;
 use Src\Application\Interfaces\Services\IProductService;
 
 class ProductController extends BaseController
@@ -16,47 +18,38 @@ class ProductController extends BaseController
     public function getProductsByFilter(ProductByFilterRequest $request)
     {        
         $dto = $request->getDto();
-        $result = $this->productService->getProductsByFilter($dto);
 
-        return response()->json([
-            'success' => $result->success,
-            'data' => $result->data,
-            'message' => $result->message
-        ], 200);
+        return $this->execute(
+            callback: fn() => $this->productService->getProductsByFilter($dto),
+            statusCodeSuccess: 200
+        );
     }
 
     public function createProduct(CreateProductRequest $request)
     {
         $dto = $request->getDto();
-        $result = $this->productService->createProduct($dto);
 
-        return response()->json([
-            'success' => $result->success,
-            'data' => $result->data,
-            'message' => $result->message
-        ], 201);
+        return $this->execute(
+            callback: fn() => $this->productService->createProduct($dto),
+            statusCodeSuccess: 201
+        );
     }
 
     public function deleteProduct(int $id)
     {
-        $result = $this->productService->deleteProduct($id);
-
-        return response()->json([
-            'success' => $result->success,
-            'data' => $result->data,
-            'message' => $result->message
-        ], 200);
+        return $this->execute(
+            callback: fn() => $this->productService->deleteProduct($id, Auth::id()),
+            statusCodeSuccess: 200
+        );
     }
 
-    public function updateProduct(int $id, CreateProductRequest $request)
+    public function updateProduct(int $id, UpdateProductRequest $request)
     {
         $dto = $request->getDto();
-        $result = $this->productService->updateProduct($id, $dto);
 
-        return response()->json([
-            'success' => $result->success,
-            'data' => $result->data,
-            'message' => $result->message
-        ], 200);
+        return $this->execute(
+            callback: fn() => $this->productService->updateProduct($id, $dto),
+            statusCodeSuccess: 200
+        );
     }
 }

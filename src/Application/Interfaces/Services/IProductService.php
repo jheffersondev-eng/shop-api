@@ -11,6 +11,6 @@ interface IProductService
     public function getProductsByFilter(GetProductFilterDto $getProductFilterDto): ServiceResult;
     public function getProductImages(int $productId): ServiceResult;
     public function createProduct(CreateProductDto $createProductDto): ServiceResult;
-    public function deleteProduct(int $productId): ServiceResult;
+    public function deleteProduct(int $productId, int $userIdDeleted): ServiceResult;
     public function updateProduct(int $productId, CreateProductDto $createProductDto): ServiceResult;
 }

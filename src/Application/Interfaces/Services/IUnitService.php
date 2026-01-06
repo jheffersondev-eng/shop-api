@@ -10,6 +10,6 @@ interface IUnitService
 {
     public function getUnitsByFilter(GetUnitFilterDto $getUnitFilterDto): ServiceResult;
     public function createUnit(CreateUnitDto $createUnitDto): ServiceResult;
-    public function deleteUnit(int $unitId): ServiceResult;
+    public function deleteUnit(int $unitId, int $userIdDeleted): ServiceResult;
     public function updateUnit(int $unitId, CreateUnitDto $createUnitDto): ServiceResult;
 }

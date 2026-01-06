@@ -5,19 +5,19 @@ namespace Src\Application\Dto\Product;
 class CreateProductDto
 {
     public function __construct(
-        public string $name,
-        public array $images,
-        public string $description,
-        public int $categoryId,
-        public int $unitId,
-        public string $barcode,
-        public bool $isActive,
-        public float $price,
-        public float $costPrice,
-        public int $stockQuantity,
-        public int $minQuantity,
-        public int|null $ownerId,
-        public int|null $userIdCreated,
-        public int|null $userIdUpdated
+        public readonly string $name,
+        public readonly array $images,
+        public readonly string $description,
+        public readonly int $categoryId,
+        public readonly int $unitId,
+        public readonly string $barcode,
+        public readonly bool $isActive,
+        public readonly float $price,
+        public readonly float $costPrice,
+        public readonly int $stockQuantity,
+        public readonly int $minQuantity,
+        public readonly int|null $ownerId,
+        public readonly int|null $userIdCreated,
+        public readonly int|null $userIdUpdated
     ) {}
 }

@@ -10,9 +10,9 @@ interface IProductRepository
 {
     public function getProductsByFilter(GetProductFilterDto $getProductFilterDto): array;
     public function getProductImages(int $productId): array;
-    public function createProduct(CreateProductDto $createProductDto): array;
-    public function createProductImages(int $productId, array $images): array;
-    public function deleteProduct(int $productId, int $userId): bool;
-    public function deleteProductImage(int $imageId): bool;
+    public function createProduct(CreateProductDto $createProductDto): ProductSummaryEntity;
     public function updateProduct(int $productId, CreateProductDto $createProductDto): ProductSummaryEntity;
+    public function createProductImages(int $productId, array $images): array;
+    public function deleteProduct(int $productId, int $userIdDeleted): bool;
+    public function deleteProductImage(int $imageId): bool;
 }
