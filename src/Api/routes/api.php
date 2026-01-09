@@ -24,8 +24,8 @@ foreach ($modules as $module) {
         $routeGroup = $routeGroup->namespace($namespace);
     }
 
-    // Aplicar middleware se não for auth
-    if ($prefix !== 'auth') {
+    // Aplicar middleware se não for auth (inclui prefixo vazio que é AuthModule)
+    if (!empty($prefix) && $prefix !== 'auth') {
         $routeGroup = $routeGroup->middleware([CheckToken::class]);
     }
 

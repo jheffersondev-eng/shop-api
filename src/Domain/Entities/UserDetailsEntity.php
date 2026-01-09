@@ -10,7 +10,7 @@ class UserDetailsEntity
         public int $id,
         public int $userId,
         public string $name,
-        public string $image,
+        public string|null $image,
         public string $document,
         public DateTime $birthDate,
         public string $phone,

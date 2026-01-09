@@ -6,6 +6,7 @@ use Src\Api\routes\Auth\AuthModule;
 use Src\Api\routes\Category\CategoryModule;
 use Src\Api\routes\Product\ProductModule;
 use Src\Api\routes\Unit\UnitModule;
+use Src\Api\routes\User\UserModule;
 
 class Configuration
 {
@@ -16,6 +17,7 @@ class Configuration
             new ProductModule(),
             new UnitModule(),
             new CategoryModule(),
+            new UserModule(),
         ];
     }
 }
