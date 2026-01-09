@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../src/Api/routes/web.php',
         api: __DIR__.'/../src/Api/routes/api.php',
@@ -26,3 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
     })->create();
+
+// Set the application path to src directory to match the Src namespace
+$app->useAppPath($app->basePath('src'));
+
+return $app;
