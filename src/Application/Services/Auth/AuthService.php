@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Src\Application\Interfaces\Repositories\IUserRepository;
 use Src\Application\Interfaces\Services\IAuthService;
+use Src\Domain\Enums\EIsActive;
 
 class AuthService implements IAuthService
 {
@@ -19,6 +20,14 @@ class AuthService implements IAuthService
     {
         try {
             $user = $this->userRepository->findByEmail($authDto->email);
+
+            if($user->emailVerifiedAt === null) {
+                return ServiceResult::fail('Email não verificado');
+            }
+
+            if($user->isActive === EIsActive::INACTIVE) {
+                return ServiceResult::fail('Usuário inativo');
+            }
 
             if (!$user) {
                 return ServiceResult::fail('Usuário não encontrado');
