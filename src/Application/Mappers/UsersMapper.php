@@ -4,7 +4,7 @@ namespace Src\Application\Mappers;
 
 use DateTime;
 use Illuminate\Support\Collection;
-use Src\Domain\Entities\UserEntity;
+use Src\Application\Reponses\User\GetUsersByFilterResponseDto;
 use Src\Domain\Entities\ProfileSummaryEntity;
 use Src\Domain\Entities\UserSummaryEntity;
 
@@ -36,7 +36,7 @@ class UsersMapper
                 name: $user->user_updated_name
             ) : null;
 
-            return new UserEntity(
+            return new GetUsersByFilterResponseDto(
                 id: $user->id,
                 email: $user->email,
                 owner: $owner,
@@ -46,6 +46,7 @@ class UsersMapper
                 userUpdated: $userUpdated,
                 createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->created_at),
                 updatedAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->updated_at),
+                emailVerifiedAt: $user->email_verified_at ?? null,
                 verificationCode: $user->verification_code ?? null,
                 verificationExpiresAt: $user->verification_expires_at ? DateTime::createFromFormat('Y-m-d H:i:s', $user->verification_expires_at) : null
             );
