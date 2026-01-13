@@ -3,7 +3,6 @@
 namespace Src\Infrastructure\Persistence\Repositories;
 
 use Exception;
-use Illuminate\Foundation\Mix;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Src\Application\Dto\Login\AuthDto;
@@ -18,7 +17,6 @@ use Src\Application\Mappers\UsersMapper;
 use Src\Domain\Entities\UserEntity;
 use Src\Infrastructure\Persistence\Models\User;
 use Src\Infrastructure\Persistence\Models\UserDetail;
-use Src\Domain\Entities\UserSummaryEntity;
 
 class UserRepository implements IUserRepository
 {
@@ -40,6 +38,7 @@ class UserRepository implements IUserRepository
             ->leftJoin('user_details as udo', 'u.owner_id', '=', 'udo.user_id')
             ->leftJoin('user_details as udc', 'u.user_id_created', '=', 'udc.user_id')
             ->leftJoin('user_details as udu', 'u.user_id_updated', '=', 'udu.user_id')
+            ->leftJoin('user_details as udd', 'u.user_id_deleted', '=', 'udd.user_id')
             ->select(
                 'u.id as id',
                 'u.email',
@@ -47,12 +46,12 @@ class UserRepository implements IUserRepository
                 'u.owner_id',
                 'ud.user_id',
                 'u.is_active',
-                'u.user_id_created',
-                'u.user_id_updated',
                 'u.created_at',
                 'u.updated_at',
+                'u.deleted_at',
                 'u.verification_code',
                 'u.verification_expires_at',
+                'u.email_verified_at',
                 'ud.name as name',
                 'ud.document',
                 'ud.phone',
@@ -68,7 +67,9 @@ class UserRepository implements IUserRepository
                 'udc.user_id as user_id_created',
                 'udc.name as user_created_name',
                 'udu.user_id as user_id_updated',
-                'udu.name as user_updated_name'
+                'udu.name as user_updated_name',
+                'udd.user_id as user_id_deleted',
+                'udd.name as user_deleted_name'
             );
 
             $query = $this->applyFilter($query, $getUserFilterDto);
@@ -82,7 +83,7 @@ class UserRepository implements IUserRepository
         }
     }
 
-    private function applyFilter($query, GetUserFilterDto $getUserFilterDto): Mix
+    private function applyFilter($query, GetUserFilterDto $getUserFilterDto)
     {
         $query->where('u.owner_id', $getUserFilterDto->ownerId);
 
@@ -152,10 +153,7 @@ class UserRepository implements IUserRepository
 
             $this->userDetailRepository->update($userDto->userDetailsDto);
 
-            return new UserSummaryEntity(
-                id: $user->id,
-                name: $userDetail->name ?? $userDto->userDetailsDto->name,
-            );
+            return GenericMapper::map($user, UserEntity::class);
         } catch (Exception $e) {
             Log::error('Erro ao atualizar usuário: ' . $e->getMessage());
             throw $e;

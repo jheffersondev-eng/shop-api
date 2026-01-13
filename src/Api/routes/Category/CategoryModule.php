@@ -11,10 +11,10 @@ class CategoryModule
     public function getRoutesApi()
     {
         return new RouteModule('category', function () {
-            Route::post('/create', [CategoryController::class, 'createCategory'])->name('category.createCategory');
             Route::get('/get-categories-by-filter', [CategoryController::class, 'getCategoriesByFilter'])->name('category.getCategoriesByFilter');
-            Route::delete('/{id}', [CategoryController::class, 'deleteCategory'])->name('category.deleteCategory');
-            Route::put('/{id}', [CategoryController::class, 'updateCategory'])->name('category.updateCategory');
+            Route::post('/create', [CategoryController::class, 'create'])->name('category.create');
+            Route::delete('/{id}', [CategoryController::class, 'delete'])->name('category.delete');
+            Route::put('/{id}', [CategoryController::class, 'update'])->name('category.update');
         });
     }
 }

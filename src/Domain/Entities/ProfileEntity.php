@@ -4,18 +4,17 @@ namespace Src\Domain\Entities;
 
 use DateTime;
 
-class UserDetailsEntity
+class ProfileEntity
 {
     public function __construct(
         public int $id,
-        public int $userId,
+        public int $ownerId,
         public string $name,
-        public string|null $image,
-        public string $document,
-        public DateTime $birthDate,
-        public string $phone,
-        public string $address,
-        public float $creditLimit,
+        public string $description,
+        public string $permission,
+        public int $userIdCreated,
+        public int|null $userIdUpdated,
+        public int|null $userIdDeleted,
         public DateTime $createdAt,
         public DateTime|null $updatedAt,
         public DateTime|null $deletedAt,

@@ -25,30 +25,30 @@ class ProductController extends BaseController
         );
     }
 
-    public function createProduct(CreateProductRequest $request)
+    public function create(CreateProductRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->productService->createProduct($dto),
+            callback: fn() => $this->productService->create($dto),
             statusCodeSuccess: 201
         );
     }
 
-    public function deleteProduct(int $id)
+    public function delete(int $id)
     {
         return $this->execute(
-            callback: fn() => $this->productService->deleteProduct($id, Auth::id()),
+            callback: fn() => $this->productService->delete($id, Auth::id()),
             statusCodeSuccess: 200
         );
     }
 
-    public function updateProduct(int $id, UpdateProductRequest $request)
+    public function update(int $id, UpdateProductRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->productService->updateProduct($id, $dto),
+            callback: fn() => $this->productService->update($id, $dto),
             statusCodeSuccess: 200
         );
     }

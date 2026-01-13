@@ -32,7 +32,7 @@ class CategoryService implements ICategoryService
         }
     }
 
-    public function createCategory(CreateCategoryDto $createCategoryDto): ServiceResult
+    public function create(CreateCategoryDto $createCategoryDto): ServiceResult
     {
         try {
             $category = $this->categoryRepository->createCategory($createCategoryDto);
@@ -47,7 +47,7 @@ class CategoryService implements ICategoryService
         }
     }
 
-    public function deleteCategory(int $categoryId, int $userIdDeleted): ServiceResult
+    public function delete(int $categoryId, int $userIdDeleted): ServiceResult
     {
         try {
             $this->categoryRepository->deleteCategory($categoryId, $userIdDeleted);
@@ -65,7 +65,7 @@ class CategoryService implements ICategoryService
         }
     }
 
-    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto): ServiceResult
+    public function update(int $categoryId, CreateCategoryDto $createCategoryDto): ServiceResult
     {
         try {
             $category = $this->categoryRepository->updateCategory($categoryId, $createCategoryDto);

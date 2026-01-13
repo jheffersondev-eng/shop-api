@@ -32,10 +32,10 @@ class UnitService implements IUnitService
         }
     }
 
-    public function createUnit(CreateUnitDto $createUnitDto): ServiceResult
+    public function create(CreateUnitDto $createUnitDto): ServiceResult
     {
         try {
-            $unit = $this->unitRepository->createUnit($createUnitDto);
+            $unit = $this->unitRepository->create($createUnitDto);
 
             return ServiceResult::ok(
                 data: $unit,
@@ -47,10 +47,10 @@ class UnitService implements IUnitService
         }
     }
 
-    public function deleteUnit(int $unitId, int $userIdDeleted): ServiceResult
+    public function delete(int $unitId, int $userIdDeleted): ServiceResult
     {
         try {
-            $this->unitRepository->deleteUnit($unitId, $userIdDeleted);
+            $this->unitRepository->delete($unitId, $userIdDeleted);
             
             return ServiceResult::ok(
                 data: null,
@@ -65,10 +65,10 @@ class UnitService implements IUnitService
         }
     }
 
-    public function updateUnit(int $unitId, CreateUnitDto $createUnitDto): ServiceResult
+    public function update(int $unitId, CreateUnitDto $createUnitDto): ServiceResult
     {
         try {
-            $unit = $this->unitRepository->updateUnit($unitId, $createUnitDto);
+            $unit = $this->unitRepository->update($unitId, $createUnitDto);
             
             return ServiceResult::ok(
                 data: $unit,

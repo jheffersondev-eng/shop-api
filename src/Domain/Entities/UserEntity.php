@@ -16,6 +16,7 @@ class UserEntity
         public int|null $userIdUpdated,
         public DateTime $createdAt,
         public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
         public string|null $emailVerifiedAt,
         public string|null $verificationCode,
         public DateTime|null $verificationExpiresAt
