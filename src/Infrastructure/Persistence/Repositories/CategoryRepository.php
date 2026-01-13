@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Src\Application\Dto\Category\CreateCategoryDto;
 use Src\Application\Mappers\GenericMapper;
 use Src\Application\Mappers\CategoriesMapper;
+use Src\Domain\Entities\CategoryEntity;
 use Src\Infrastructure\Persistence\Models\Category;
-use Src\Domain\Entities\CategorySummaryEntity;
 
 class CategoryRepository implements ICategoryRepository
 {
@@ -55,26 +55,7 @@ class CategoryRepository implements ICategoryRepository
         }
     }
 
-    private function applyFilter($query, GetCategoryFilterDto $getCategoryFilterDto)
-    {
-        $query->where('c.owner_id', $getCategoryFilterDto->ownerId);
-
-        if ($getCategoryFilterDto->id) {
-            $query->where('c.id', $getCategoryFilterDto->id);
-        }
-
-        if ($getCategoryFilterDto->name) {
-            $query->where('c.name', 'like', '%' . $getCategoryFilterDto->name . '%');
-        }
-
-        if ($getCategoryFilterDto->description) {
-            $query->where('c.description', 'like', '%' . $getCategoryFilterDto->description . '%');
-        }
-
-        return $query;
-    }
-
-    public function createCategory(CreateCategoryDto $createCategoryDto): CategorySummaryEntity
+    public function createCategory(CreateCategoryDto $createCategoryDto): CategoryEntity
     {
         try {
             $category = Category::create([
@@ -86,13 +67,35 @@ class CategoryRepository implements ICategoryRepository
                 'updated_at' => now(),
             ]);
 
-            $categorySummaryEntity = GenericMapper::map($category, CategorySummaryEntity::class);
+            $categoryEntity = GenericMapper::map($category, CategoryEntity::class);
 
-            return $categorySummaryEntity;
+            return $categoryEntity;
         } catch (Exception $e) {
             Log::error('Erro ao criar categoria: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto):  CategoryEntity
+    {
+        $category = Category::where('id', $categoryId)
+                    ->where('owner_id', $createCategoryDto->ownerId)
+                    ->first();
+
+        if (!$category) {
+            throw new CategoryNotFoundException();
+        }
+
+        $category->update([
+            'name' => $createCategoryDto->name,
+            'description' => $createCategoryDto->description,
+            'user_id_updated' => $createCategoryDto->userIdUpdated,
+            'updated_at' => now(),
+        ]);
+
+        $categoryEntity = GenericMapper::map($category, CategoryEntity::class);
+        
+        return $categoryEntity;
     }
 
     public function deleteCategory(int $categoryId, int $userIdDeleted): bool
@@ -111,25 +114,22 @@ class CategoryRepository implements ICategoryRepository
         return true;
     }
 
-    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto):  CategorySummaryEntity
+    private function applyFilter($query, GetCategoryFilterDto $getCategoryFilterDto)
     {
-        $category = Category::where('id', $categoryId)
-                    ->where('owner_id', $createCategoryDto->ownerId)
-                    ->first();
+        $query->where('c.owner_id', $getCategoryFilterDto->ownerId);
 
-        if (!$category) {
-            throw new CategoryNotFoundException();
+        if ($getCategoryFilterDto->id) {
+            $query->where('c.id', $getCategoryFilterDto->id);
         }
 
-        $category->update([
-            'name' => $createCategoryDto->name,
-            'description' => $createCategoryDto->description,
-            'user_id_updated' => $createCategoryDto->userIdUpdated,
-            'updated_at' => now(),
-        ]);
+        if ($getCategoryFilterDto->name) {
+            $query->where('c.name', 'like', '%' . $getCategoryFilterDto->name . '%');
+        }
 
-        $categoryEntity = GenericMapper::map($category, CategorySummaryEntity::class);
-        
-        return $categoryEntity;
+        if ($getCategoryFilterDto->description) {
+            $query->where('c.description', 'like', '%' . $getCategoryFilterDto->description . '%');
+        }
+
+        return $query;
     }
 }

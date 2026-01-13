@@ -3,7 +3,6 @@
 namespace Src\Infrastructure\Persistence\Repositories;
 
 use Exception;
-use Illuminate\Foundation\Mix;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Src\Application\Dto\Login\AuthDto;
@@ -18,7 +17,6 @@ use Src\Application\Mappers\UsersMapper;
 use Src\Domain\Entities\UserEntity;
 use Src\Infrastructure\Persistence\Models\User;
 use Src\Infrastructure\Persistence\Models\UserDetail;
-use Src\Domain\Entities\UserSummaryEntity;
 
 class UserRepository implements IUserRepository
 {
@@ -82,7 +80,7 @@ class UserRepository implements IUserRepository
         }
     }
 
-    private function applyFilter($query, GetUserFilterDto $getUserFilterDto): Mix
+    private function applyFilter($query, GetUserFilterDto $getUserFilterDto)
     {
         $query->where('u.owner_id', $getUserFilterDto->ownerId);
 
@@ -152,10 +150,7 @@ class UserRepository implements IUserRepository
 
             $this->userDetailRepository->update($userDto->userDetailsDto);
 
-            return new UserSummaryEntity(
-                id: $user->id,
-                name: $userDetail->name ?? $userDto->userDetailsDto->name,
-            );
+            return GenericMapper::map($user, UserEntity::class);
         } catch (Exception $e) {
             Log::error('Erro ao atualizar usuário: ' . $e->getMessage());
             throw $e;

@@ -4,9 +4,9 @@ namespace Src\Application\Mappers;
 
 use DateTime;
 use Illuminate\Support\Collection;
+use Src\Application\Reponses\Profile\ProfileSummaryResponseDto;
 use Src\Application\Reponses\User\GetUsersByFilterResponseDto;
-use Src\Domain\Entities\ProfileSummaryEntity;
-use Src\Domain\Entities\UserSummaryEntity;
+use Src\Application\Reponses\User\UserDetailSummaryResponseDto;
 
 class UsersMapper
 {
@@ -15,23 +15,23 @@ class UsersMapper
         return $usersEntity->map(function($user) {
             $profile = null;
 
-            $profile = $user->profile_id ? new ProfileSummaryEntity(
+            $profile = $user->profile_id ? new ProfileSummaryResponseDto(
                 id: $user->profile_id,
                 name: $user->profile_name,
                 description: $user->profile_description ?? null
             ) : null;
 
-            $owner = $user->owner_id ? new UserSummaryEntity(
+            $owner = $user->owner_id ? new UserDetailSummaryResponseDto(
                 id: $user->owner_id,
                 name: $user->owner_name
             ) : null;
 
-            $userCreated = $user->user_id_created ? new UserSummaryEntity(
+            $userCreated = $user->user_id_created ? new UserDetailSummaryResponseDto(
                 id: $user->user_id_created,
                 name: $user->user_created_name
             ) : null;
 
-            $userUpdated = $user->user_id_updated ? new UserSummaryEntity(
+            $userUpdated = $user->user_id_updated ? new UserDetailSummaryResponseDto(
                 id: $user->user_id_updated,
                 name: $user->user_updated_name
             ) : null;
