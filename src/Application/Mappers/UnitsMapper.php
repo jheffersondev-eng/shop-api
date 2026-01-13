@@ -2,6 +2,7 @@
 
 namespace Src\Application\Mappers;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Collection;
 use Src\Application\Reponses\Unit\GetUnitByFilterResponseDto;
@@ -27,6 +28,11 @@ class UnitsMapper
                 name: $unit->user_created_name
             );
 
+            $userDeleted = $unit->user_deleted_id ? new UserDetailSummaryResponseDto(
+                id: $unit->user_deleted_id,
+                name: $unit->user_deleted_name
+            ) : null;
+
             return new GetUnitByFilterResponseDto(
                 id: $unit->id,
                 name: $unit->name,
@@ -35,8 +41,10 @@ class UnitsMapper
                 format: $unit->format,
                 userCreated: $userCreated,
                 userUpdated: $userUpdated,
-                createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $unit->created_at),
-                updatedAt: DateTime::createFromFormat('Y-m-d H:i:s', $unit->updated_at)
+                userDeleted: $userDeleted,
+                createdAt: Carbon::parse($unit->created_at)->subHours(3),
+                updatedAt: $unit->updated_at ? Carbon::parse($unit->updated_at)->subHours(3) : null,
+                deletedAt: $unit->deleted_at ? Carbon::parse($unit->deleted_at)->subHours(3) : null
             );
         })->toArray();
     }

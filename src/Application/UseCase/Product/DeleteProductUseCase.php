@@ -13,7 +13,7 @@ class DeleteProductUseCase
 
     public function deleteProduct(int $productId, int $userIdDeleted): ServiceResult
     {
-        $this->productRepository->deleteProduct($productId, $userIdDeleted);
+        $this->productRepository->delete($productId, $userIdDeleted);
         $images = $this->productRepository->getProductImages($productId);
 
         foreach ($images as $image) {

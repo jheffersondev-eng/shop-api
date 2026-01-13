@@ -12,9 +12,9 @@ class UnitModule
     {
         return new RouteModule('unit', function () {
             Route::get('/get-units-by-filter', [UnitController::class, 'getUnitsByFilter'])->name('unit.getUnitsByFilter');
-            Route::post('/create', [UnitController::class, 'createUnit'])->name('unit.createUnit');
-            Route::put('/{id}', [UnitController::class, 'updateUnit'])->name('unit.updateUnit');
-            Route::delete('/{id}', [UnitController::class, 'deleteUnit'])->name('unit.deleteUnit');
+            Route::post('/create', [UnitController::class, 'create'])->name('unit.create');
+            Route::put('/{id}', [UnitController::class, 'update'])->name('unit.update');
+            Route::delete('/{id}', [UnitController::class, 'delete'])->name('unit.delete');
         });
     }
 }

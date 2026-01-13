@@ -2,7 +2,7 @@
 
 namespace Src\Application\Reponses\User;
 
-use DateTime;
+use Carbon\Carbon;
 use Src\Application\Reponses\Profile\ProfileSummaryResponseDto;
 
 class GetUsersByFilterResponseDto
@@ -15,10 +15,12 @@ class GetUsersByFilterResponseDto
         public bool $isActive,
         public UserDetailSummaryResponseDto|null $userCreated,
         public UserDetailSummaryResponseDto|null $userUpdated,
-        public DateTime $createdAt,
-        public DateTime|null $updatedAt,
-        public DateTime|null $emailVerifiedAt,
+        public UserDetailSummaryResponseDto|null $userDeleted,
+        public Carbon $createdAt,
+        public Carbon|null $updatedAt,
+        public Carbon|null $deletedAt,
+        public Carbon|null $emailVerifiedAt,
         public string|null $verificationCode,
-        public DateTime|null $verificationExpiresAt
+        public Carbon|null $verificationExpiresAt
     ) {}
 }

@@ -13,7 +13,9 @@ class CategoryEntity
         public string $description,
         public int $userIdCreated,
         public int|null $userIdUpdated,
+        public int|null $userIdDeleted,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }

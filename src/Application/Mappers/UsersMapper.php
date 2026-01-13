@@ -2,7 +2,7 @@
 
 namespace Src\Application\Mappers;
 
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Src\Application\Reponses\Profile\ProfileSummaryResponseDto;
 use Src\Application\Reponses\User\GetUsersByFilterResponseDto;
@@ -31,10 +31,15 @@ class UsersMapper
                 name: $user->user_created_name
             ) : null;
 
-            $userUpdated = $user->user_id_updated ? new UserDetailSummaryResponseDto(
-                id: $user->user_id_updated,
-                name: $user->user_updated_name
-            ) : null;
+                $userUpdated = $user->user_id_updated ? new UserDetailSummaryResponseDto(
+                    id: $user->user_id_updated,
+                    name: $user->user_updated_name
+                ) : null;
+
+                $userDeleted = $user->user_id_deleted ? new UserDetailSummaryResponseDto(
+                    id: $user->user_id_deleted,
+                    name: $user->user_deleted_name
+                ) : null;
 
             return new GetUsersByFilterResponseDto(
                 id: $user->id,
@@ -44,11 +49,13 @@ class UsersMapper
                 isActive: $user->is_active,
                 userCreated: $userCreated,
                 userUpdated: $userUpdated,
-                createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->created_at),
-                updatedAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->updated_at),
-                emailVerifiedAt: $user->email_verified_at ?? null,
+                userDeleted: $userDeleted,
+                createdAt: Carbon::parse($user->created_at)->subHours(3),
+                updatedAt: $user->updated_at ? Carbon::parse($user->updated_at)->subHours(3) : null,
+                deletedAt: $user->deleted_at ? Carbon::parse($user->deleted_at)->subHours(3) : null,
+                emailVerifiedAt: $user->email_verified_at ? Carbon::parse($user->email_verified_at)->subHours(3) : null,
                 verificationCode: $user->verification_code ?? null,
-                verificationExpiresAt: $user->verification_expires_at ? DateTime::createFromFormat('Y-m-d H:i:s', $user->verification_expires_at) : null
+                verificationExpiresAt: $user->verification_expires_at ? Carbon::parse($user->verification_expires_at)->subHours(3) : null
             );
         })->toArray();
     }

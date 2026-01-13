@@ -2,7 +2,7 @@
 
 namespace Src\Application\Reponses\Product;
 
-use DateTime;
+use Carbon\Carbon;
 use Src\Application\Reponses\Category\CategorySummaryResponseDto;
 use Src\Application\Reponses\Unit\UnitSummaryResponseDto;
 use Src\Application\Reponses\User\UserDetailSummaryResponseDto;
@@ -25,7 +25,9 @@ class GetProductsByFilterResponseDto
         public UserDetailSummaryResponseDto $owner,
         public UserDetailSummaryResponseDto|null $userCreated,
         public UserDetailSummaryResponseDto|null $userUpdated,
-        public DateTime $createdAt,
-        public DateTime $updatedAt
+        public UserDetailSummaryResponseDto|null $userDeleted,
+        public Carbon $createdAt,
+        public Carbon|null $updatedAt,
+        public Carbon|null $deletedAt,
     ) {}
 }

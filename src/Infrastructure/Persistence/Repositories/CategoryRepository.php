@@ -30,6 +30,7 @@ class CategoryRepository implements ICategoryRepository
             ->leftJoin('user_details as cdo', 'c.owner_id', '=', 'cdo.id')
             ->leftJoin('user_details as cdc', 'c.user_id_created', '=', 'cdc.id')
             ->leftJoin('user_details as cdu', 'c.user_id_updated', '=', 'cdu.id')
+            ->leftJoin('user_details as cdd', 'c.user_id_deleted', '=', 'cdd.id')
             ->select(
                 'c.id',
                 'c.name',
@@ -40,8 +41,11 @@ class CategoryRepository implements ICategoryRepository
                 'cdc.name as user_created_name',
                 'cdu.id as user_updated_id',
                 'cdu.name as user_updated_name',
+                'cdd.id as user_deleted_id',
+                'cdd.name as user_deleted_name',
                 'c.created_at',
-                'c.updated_at'
+                'c.updated_at',
+                'c.deleted_at',
             );
 
             $query = $this->applyFilter($query, $getCategoryFilterDto);

@@ -36,6 +36,7 @@ class ProductRepository implements IProductRepository
             ->leftJoin('user_details as udo', 'p.owner_id', '=', 'udo.id')
             ->leftJoin('user_details as udc', 'p.user_id_created', '=', 'udc.id')
             ->leftJoin('user_details as udu', 'p.user_id_updated', '=', 'udu.id')
+            ->leftJoin('user_details as udd', 'p.user_id_deleted', '=', 'udd.id')
             ->select(
                 'p.id as id',
                 'p.name',
@@ -64,6 +65,8 @@ class ProductRepository implements IProductRepository
                 'udc.name as user_created_name',
                 'udu.id as user_updated_id',
                 'udu.name as user_updated_name',
+                'udd.id as user_deleted_id',
+                'udd.name as user_deleted_name'
             );
 
             $query = $this->applyFilter($query, $getProductFilterDto);
@@ -93,7 +96,7 @@ class ProductRepository implements IProductRepository
             ->toArray();
     }
 
-    public function createProduct(CreateProductDto $createProductDto): ProductEntity
+    public function create(CreateProductDto $createProductDto): ProductEntity
     {
         try {
             $product = Product::create([
@@ -140,7 +143,7 @@ class ProductRepository implements IProductRepository
         return $createdImages;
     }
 
-    public function deleteProduct(int $productId, int $userIdDeleted): bool
+    public function delete(int $productId, int $userIdDeleted): bool
     {
         $product = Product::where('id', $productId)->first();
         if (!$product) {
@@ -172,7 +175,7 @@ class ProductRepository implements IProductRepository
         return true;
     }
 
-    public function updateProduct(int $productId, CreateProductDto $createProductDto):  ProductEntity
+    public function update(int $productId, CreateProductDto $createProductDto):  ProductEntity
     {
         $product = Product::where('id', $productId)
                     ->where('owner_id', $createProductDto->ownerId)

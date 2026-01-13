@@ -37,7 +37,7 @@ class ProductService implements IProductService
         }
     }
 
-    public function createProduct(CreateProductDto $createProductDto): ServiceResult
+    public function create(CreateProductDto $createProductDto): ServiceResult
     {
         try {
             return $this->createProductUseCase->createProduct($createProductDto);
@@ -47,7 +47,7 @@ class ProductService implements IProductService
         }
     }
 
-    public function deleteProduct(int $productId, int $userIdDeleted): ServiceResult
+    public function delete(int $productId, int $userIdDeleted): ServiceResult
     {
         try {
             return $this->deleteProductUseCase->deleteProduct($productId, $userIdDeleted);
@@ -60,10 +60,10 @@ class ProductService implements IProductService
         }
     }
 
-    public function updateProduct(int $productId, CreateProductDto $createProductDto): ServiceResult
+    public function update(int $productId, CreateProductDto $createProductDto): ServiceResult
     {
         try {
-            $product = $this->productRepository->updateProduct($productId, $createProductDto);
+            $product = $this->productRepository->update($productId, $createProductDto);
 
             return ServiceResult::ok(
                 data: $product,

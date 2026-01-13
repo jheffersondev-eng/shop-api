@@ -14,7 +14,7 @@ class CreateProductUseCase
 
     public function createProduct(CreateProductDto $createProductDto): ServiceResult
     {
-        $product = $this->productRepository->createProduct($createProductDto);
+        $product = $this->productRepository->create($createProductDto);
         $images = $this->productRepository->createProductImages($product->id, $createProductDto->images);
         $product->images = $images;
 
