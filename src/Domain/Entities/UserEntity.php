@@ -9,13 +9,15 @@ class UserEntity
     public function __construct(
         public int $id,
         public string $email,
-        public UserSummaryEntity|null $owner,
-        public ProfileSummaryEntity|null $profile,
+        public int|null $ownerId,
+        public int|null $profileId,
         public bool $isActive,
-        public UserSummaryEntity|null $userCreated,
-        public UserSummaryEntity|null $userUpdated,
+        public int|null $userIdCreated,
+        public int|null $userIdUpdated,
         public DateTime $createdAt,
-        public DateTime $updatedAt,
+        public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
+        public string|null $emailVerifiedAt,
         public string|null $verificationCode,
         public DateTime|null $verificationExpiresAt
     ) {}

@@ -9,7 +9,7 @@ use Src\Application\Services\ServiceResult;
 interface ICategoryService
 {
     public function getCategoriesByFilter(GetCategoryFilterDto $getCategoryFilterDto): ServiceResult;
-    public function createCategory(CreateCategoryDto $createCategoryDto): ServiceResult;
-    public function deleteCategory(int $categoryId, int $userIdDeleted): ServiceResult;
-    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto): ServiceResult;
+    public function create(CreateCategoryDto $createCategoryDto): ServiceResult;
+    public function delete(int $categoryId, int $userIdDeleted): ServiceResult;
+    public function update(int $categoryId, CreateCategoryDto $createCategoryDto): ServiceResult;
 }

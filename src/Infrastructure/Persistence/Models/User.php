@@ -18,6 +18,9 @@ class User extends Authenticatable
         'profile_id',
         'is_active',
         'owner_id',
+        'email_verified_at',
+        'verification_code',
+        'verification_expires_at',
         'user_id_created',
         'user_id_updated',
         'user_id_deleted',
@@ -34,5 +37,6 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'created_at' => 'datetime',
+        'verification_expires_at' => 'datetime',
     ];
 }

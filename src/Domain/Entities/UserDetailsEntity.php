@@ -17,6 +17,7 @@ class UserDetailsEntity
         public string $address,
         public float $creditLimit,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }

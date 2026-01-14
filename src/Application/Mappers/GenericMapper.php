@@ -5,19 +5,12 @@ namespace Src\Application\Mappers;
 use Illuminate\Support\Collection;
 use ReflectionClass;
 use ReflectionProperty;
-use stdClass;
 use Exception;
 
 class GenericMapper
 {
     /**
      * Mapeia um model único para uma entidade
-     *
-     * @template T
-     * @param object|Collection $source - Model ou Collection com um objeto
-     * @param class-string<T> $targetClass - Classe da entidade de destino
-     * @return T - Retorna instância da classe especificada
-     * @throws Exception - Se houver erro na conversão ou campo obrigatório faltando
      */
     public static function map($source, string $targetClass): object
     {
@@ -90,9 +83,6 @@ class GenericMapper
 
     /**
      * Converte camelCase para snake_case
-     *
-     * @param string $str
-     * @return string
      */
     private static function camelToSnake(string $str): string
     {
@@ -101,10 +91,6 @@ class GenericMapper
 
     /**
      * Converte um valor para o tipo especificado
-     *
-     * @param mixed $value
-     * @param string $type
-     * @return mixed
      */
     private static function castValue($value, string $type)
     {

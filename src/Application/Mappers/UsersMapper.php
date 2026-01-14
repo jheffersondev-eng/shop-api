@@ -2,11 +2,11 @@
 
 namespace Src\Application\Mappers;
 
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Src\Domain\Entities\UserEntity;
-use Src\Domain\Entities\ProfileSummaryEntity;
-use Src\Domain\Entities\UserSummaryEntity;
+use Src\Application\Reponses\Profile\ProfileSummaryResponseDto;
+use Src\Application\Reponses\User\GetUsersByFilterResponseDto;
+use Src\Application\Reponses\User\UserDetailSummaryResponseDto;
 
 class UsersMapper
 {
@@ -15,28 +15,33 @@ class UsersMapper
         return $usersEntity->map(function($user) {
             $profile = null;
 
-            $profile = $user->profile_id ? new ProfileSummaryEntity(
+            $profile = $user->profile_id ? new ProfileSummaryResponseDto(
                 id: $user->profile_id,
                 name: $user->profile_name,
                 description: $user->profile_description ?? null
             ) : null;
 
-            $owner = $user->owner_id ? new UserSummaryEntity(
+            $owner = $user->owner_id ? new UserDetailSummaryResponseDto(
                 id: $user->owner_id,
                 name: $user->owner_name
             ) : null;
 
-            $userCreated = $user->user_id_created ? new UserSummaryEntity(
+            $userCreated = $user->user_id_created ? new UserDetailSummaryResponseDto(
                 id: $user->user_id_created,
                 name: $user->user_created_name
             ) : null;
 
-            $userUpdated = $user->user_id_updated ? new UserSummaryEntity(
-                id: $user->user_id_updated,
-                name: $user->user_updated_name
-            ) : null;
+                $userUpdated = $user->user_id_updated ? new UserDetailSummaryResponseDto(
+                    id: $user->user_id_updated,
+                    name: $user->user_updated_name
+                ) : null;
 
-            return new UserEntity(
+                $userDeleted = $user->user_id_deleted ? new UserDetailSummaryResponseDto(
+                    id: $user->user_id_deleted,
+                    name: $user->user_deleted_name
+                ) : null;
+
+            return new GetUsersByFilterResponseDto(
                 id: $user->id,
                 email: $user->email,
                 owner: $owner,
@@ -44,10 +49,13 @@ class UsersMapper
                 isActive: $user->is_active,
                 userCreated: $userCreated,
                 userUpdated: $userUpdated,
-                createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->created_at),
-                updatedAt: DateTime::createFromFormat('Y-m-d H:i:s', $user->updated_at),
+                userDeleted: $userDeleted,
+                createdAt: Carbon::parse($user->created_at)->subHours(3),
+                updatedAt: $user->updated_at ? Carbon::parse($user->updated_at)->subHours(3) : null,
+                deletedAt: $user->deleted_at ? Carbon::parse($user->deleted_at)->subHours(3) : null,
+                emailVerifiedAt: $user->email_verified_at ? Carbon::parse($user->email_verified_at)->subHours(3) : null,
                 verificationCode: $user->verification_code ?? null,
-                verificationExpiresAt: $user->verification_expires_at ? DateTime::createFromFormat('Y-m-d H:i:s', $user->verification_expires_at) : null
+                verificationExpiresAt: $user->verification_expires_at ? Carbon::parse($user->verification_expires_at)->subHours(3) : null
             );
         })->toArray();
     }

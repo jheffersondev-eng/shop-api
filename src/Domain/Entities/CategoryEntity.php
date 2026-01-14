@@ -8,12 +8,14 @@ class CategoryEntity
 {
     public function __construct(
         public int $id,
-        public UserSummaryEntity $owner,
+        public int $ownerId,
         public string $name,
         public string $description,
-        public UserSummaryEntity $userCreated,
-        public UserSummaryEntity|null $userUpdated,
+        public int $userIdCreated,
+        public int|null $userIdUpdated,
+        public int|null $userIdDeleted,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }
