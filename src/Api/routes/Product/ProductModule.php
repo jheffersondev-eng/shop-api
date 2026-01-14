@@ -11,10 +11,10 @@ class ProductModule
     public function getRoutesApi()
     {
         return new RouteModule('product', function () {
-            Route::post('/create-product', [ProductController::class, 'createProduct'])->name('product.createProduct');
             Route::get('/get-products-by-filter', [ProductController::class, 'getProductsByFilter'])->name('product.getProductsByFilter');
-            Route::delete('/{id}', [ProductController::class, 'deleteProduct'])->name('product.deleteProduct');
-            Route::put('/{id}', [ProductController::class, 'updateProduct'])->name('product.updateProduct');
+            Route::post('/create', [ProductController::class, 'create'])->name('product.create');
+            Route::delete('/{id}', [ProductController::class, 'delete'])->name('product.delete');
+            Route::put('/{id}', [ProductController::class, 'update'])->name('product.update');
         });
     }
 }

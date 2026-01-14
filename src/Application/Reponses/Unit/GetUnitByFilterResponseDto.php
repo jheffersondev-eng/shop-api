@@ -2,7 +2,7 @@
 
 namespace Src\Application\Reponses\Unit;
 
-use DateTime;
+use Carbon\Carbon;
 use Src\Application\Reponses\User\UserDetailSummaryResponseDto;
 
 class GetUnitByFilterResponseDto
@@ -15,7 +15,9 @@ class GetUnitByFilterResponseDto
         public int $format,
         public UserDetailSummaryResponseDto $userCreated,
         public UserDetailSummaryResponseDto|null $userUpdated,
-        public DateTime $createdAt,
-        public DateTime $updatedAt
+        public UserDetailSummaryResponseDto|null $userDeleted,
+        public Carbon $createdAt,
+        public Carbon|null $updatedAt,
+        public Carbon|null $deletedAt,
     ) {}
 }

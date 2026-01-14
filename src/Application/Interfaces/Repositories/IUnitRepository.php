@@ -9,7 +9,7 @@ use Src\Domain\Entities\UnitEntity;
 interface IUnitRepository
 {
     public function getUnitsByFilter(GetUnitFilterDto $getProductFilterDto): array;
-    public function createUnit(CreateUnitDto $createUnitDto): UnitEntity;
-    public function updateUnit(int $unitId, CreateUnitDto $createUnitDto): UnitEntity;
-    public function deleteUnit(int $unitId, int $userIdDeleted): bool;
+    public function create(CreateUnitDto $createUnitDto): UnitEntity;
+    public function update(int $unitId, CreateUnitDto $createUnitDto): UnitEntity;
+    public function delete(int $unitId, int $userIdDeleted): bool;
 }

@@ -11,6 +11,7 @@ class ProductImageEntity
         public int $productId,
         public string $image,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }

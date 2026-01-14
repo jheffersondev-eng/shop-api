@@ -30,6 +30,7 @@ class UnitRepository implements IUnitRepository
             ->leftJoin('user_details as udo', 'u.owner_id', '=', 'udo.id')
             ->leftJoin('user_details as udc', 'u.user_id_created', '=', 'udc.id')
             ->leftJoin('user_details as udu', 'u.user_id_updated', '=', 'udu.id')
+            ->leftJoin('user_details as udd', 'u.user_id_deleted', '=', 'udd.id')
             ->select(
                 'u.id as id',
                 'u.name',
@@ -41,8 +42,11 @@ class UnitRepository implements IUnitRepository
                 'udc.name as user_created_name',
                 'udu.id as user_updated_id',
                 'udu.name as user_updated_name',
+                'udd.id as user_deleted_id',
+                'udd.name as user_deleted_name',
                 'u.created_at',
-                'u.updated_at'
+                'u.updated_at',
+                'u.deleted_at',
             );
 
             $query = $this->applyFilter($query, $getUnitFilterDto);
@@ -56,7 +60,7 @@ class UnitRepository implements IUnitRepository
         }
     }
 
-    public function createUnit(CreateUnitDto $createUnitDto): UnitEntity
+    public function create(CreateUnitDto $createUnitDto): UnitEntity
     {
         try {
             $unit = Unit::create([
@@ -78,7 +82,7 @@ class UnitRepository implements IUnitRepository
         }
     }
 
-    public function deleteUnit(int $unitId, int $userIdDeleted): bool
+    public function delete(int $unitId, int $userIdDeleted): bool
     {
         $unit = Unit::where('id', $unitId)->first();
 
@@ -94,7 +98,7 @@ class UnitRepository implements IUnitRepository
         return true;
     }
 
-    public function updateUnit(int $unitId, CreateUnitDto $createUnitDto):  UnitEntity
+    public function update(int $unitId, CreateUnitDto $createUnitDto):  UnitEntity
     {
         $unit = Unit::where('id', $unitId)
                     ->where('owner_id', $createUnitDto->ownerId)

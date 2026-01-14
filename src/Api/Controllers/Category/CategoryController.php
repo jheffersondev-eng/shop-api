@@ -25,30 +25,30 @@ class CategoryController extends BaseController
         );
     }
 
-    public function createCategory(CreateCategoryRequest $request)
+    public function create(CreateCategoryRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->categoryService->createCategory($dto),
+            callback: fn() => $this->categoryService->create($dto),
             statusCodeSuccess: 201
         );
     }
 
-    public function updateCategory(int $id, UpdateCategoryRequest $request)
+    public function update(int $id, UpdateCategoryRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->categoryService->updateCategory($id, $dto),
+            callback: fn() => $this->categoryService->update($id, $dto),
             statusCodeSuccess: 200
         );
     }
 
-    public function deleteCategory(int $id)
+    public function delete(int $id)
     {
         return $this->execute(
-            callback: fn() => $this->categoryService->deleteCategory($id, Auth::id()),
+            callback: fn() => $this->categoryService->delete($id, Auth::id()),
             statusCodeSuccess: 200
         );
     }

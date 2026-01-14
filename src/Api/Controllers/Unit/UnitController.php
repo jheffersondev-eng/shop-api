@@ -25,30 +25,30 @@ class UnitController extends BaseController
         );
     }
 
-    public function createUnit(CreateUnitRequest $request)
+    public function create(CreateUnitRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->unitService->createUnit($dto),
+            callback: fn() => $this->unitService->create($dto),
             statusCodeSuccess: 201
         );
     }
 
-    public function updateUnit(int $id, UpdateUnitRequest $request)
+    public function update(int $id, UpdateUnitRequest $request)
     {
         $dto = $request->getDto();
 
         return $this->execute(
-            callback: fn() => $this->unitService->updateUnit($id, $dto),
+            callback: fn() => $this->unitService->update($id, $dto),
             statusCodeSuccess: 200
         );
     }
 
-    public function deleteUnit(int $id)
+    public function delete(int $id)
     {
         return $this->execute(
-            callback: fn() => $this->unitService->deleteUnit($id, Auth::id()),
+            callback: fn() => $this->unitService->delete($id, Auth::id()),
             statusCodeSuccess: 200
         );
     }

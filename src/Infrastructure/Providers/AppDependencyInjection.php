@@ -9,18 +9,22 @@ use Src\Application\Interfaces\Services\IAuthService;
 use Illuminate\Contracts\Foundation\Application;
 use Src\Application\Interfaces\Repositories\ICategoryRepository;
 use Src\Application\Interfaces\Repositories\IProductRepository;
+use Src\Application\Interfaces\Repositories\IProfileRepository;
 use Src\Application\Interfaces\Repositories\IUnitRepository;
 use Src\Application\Interfaces\Repositories\IUserDetailRepository;
 use Src\Application\Interfaces\Services\ICategoryService;
 use Src\Application\Interfaces\Services\IProductService;
+use Src\Application\Interfaces\Services\IProfileService;
 use Src\Application\Interfaces\Services\IUnitService;
 use Src\Application\Interfaces\Services\IUserService;
 use Src\Application\Services\Category\CategoryService;
+use Src\Application\Services\Profile\ProfileService;
 use Src\Application\Services\Product\ProductService;
 use Src\Application\Services\Unit\UnitService;
 use Src\Application\Services\User\UserService;
 use Src\Infrastructure\Persistence\Repositories\CategoryRepository;
 use Src\Infrastructure\Persistence\Repositories\ProductRepository;
+use Src\Infrastructure\Persistence\Repositories\ProfileRepository;
 use Src\Infrastructure\Persistence\Repositories\UnitRepository;
 use Src\Infrastructure\Persistence\Repositories\UserDetailRepository;
 
@@ -34,6 +38,7 @@ class AppDependencyInjection
         $app->bind(IUnitService::class, UnitService::class);
         $app->bind(ICategoryService::class, CategoryService::class);
         $app->bind(IUserService::class, UserService::class);
+        $app->bind(IProfileService::class, ProfileService::class);
         
         //register bindings repositorys
         $app->bind(IUserRepository::class, UserRepository::class);
@@ -41,6 +46,7 @@ class AppDependencyInjection
         $app->bind(IUnitRepository::class, UnitRepository::class);
         $app->bind(ICategoryRepository::class, CategoryRepository::class);
         $app->bind(IUserDetailRepository::class, UserDetailRepository::class);
+        $app->bind(IProfileRepository::class, ProfileRepository::class);
 
     }
 }

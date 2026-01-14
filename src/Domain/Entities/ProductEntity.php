@@ -19,9 +19,12 @@ class ProductEntity
         public float $stockQuantity,
         public float $minQuantity,
         public int $ownerId,
+        public array|null $images,
         public int|null $userIdCreated,
         public int|null $userIdUpdated,
+        public int|null $userIdDeleted,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }

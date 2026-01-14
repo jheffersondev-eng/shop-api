@@ -14,7 +14,9 @@ class UnitEntity
         public int $format,
         public int $userIdCreated,
         public int|null $userIdUpdated,
+        public int|null $userIdDeleted,
         public DateTime $createdAt,
-        public DateTime $updatedAt
+        public DateTime|null $updatedAt,
+        public DateTime|null $deletedAt,
     ) {}
 }

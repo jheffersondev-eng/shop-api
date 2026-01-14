@@ -2,6 +2,7 @@
 
 namespace Src\Application\Mappers;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Collection;
 use Src\Application\Reponses\Category\CategorySummaryResponseDto;
@@ -22,6 +23,11 @@ class ProductsMapper
             $userCreated = $product->user_created_id ? new UserDetailSummaryResponseDto(
                     id: $product->user_created_id,
                     name: $product->user_created_name
+                ) : null;
+
+            $userDeleted = $product->user_deleted_id ? new UserDetailSummaryResponseDto(
+                    id: $product->user_deleted_id,
+                    name: $product->user_deleted_name
                 ) : null;
             
             return new GetProductsByFilterResponseDto(
@@ -51,8 +57,10 @@ class ProductsMapper
                 isActive: $product->is_active,
                 userCreated: $userCreated,
                 userUpdated: $userUpdated,
-                createdAt: DateTime::createFromFormat('Y-m-d H:i:s', $product->created_at),
-                updatedAt: DateTime::createFromFormat('Y-m-d H:i:s', $product->updated_at)
+                userDeleted: $userDeleted,
+                createdAt: Carbon::parse($product->created_at)->subHours(3),
+                updatedAt: $product->updated_at ? Carbon::parse($product->updated_at)->subHours(3) : null,
+                deletedAt: $product->deleted_at ? Carbon::parse($product->deleted_at)->subHours(3) : null
             );
         })->toArray();
     }
