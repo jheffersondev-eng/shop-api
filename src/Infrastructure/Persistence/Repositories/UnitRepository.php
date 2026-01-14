@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Src\Application\Dto\Unit\CreateUnitDto;
 use Src\Application\Mappers\GenericMapper;
 use Src\Application\Mappers\UnitsMapper;
+use Src\Domain\Entities\UnitEntity;
 use Src\Infrastructure\Persistence\Models\Unit;
-use Src\Domain\Entities\UnitSummaryEntity;
 
 class UnitRepository implements IUnitRepository
 {
@@ -56,30 +56,7 @@ class UnitRepository implements IUnitRepository
         }
     }
 
-    private function applyFilter($query, GetUnitFilterDto $getUnitFilterDto)
-    {
-        $query->where('u.owner_id', $getUnitFilterDto->ownerId);
-
-        if ($getUnitFilterDto->id) {
-            $query->where('u.id', $getUnitFilterDto->id);
-        }
-
-        if ($getUnitFilterDto->name) {
-            $query->where('u.name', 'like', '%' . $getUnitFilterDto->name . '%');
-        }
-
-        if ($getUnitFilterDto->abbreviation) {
-            $query->where('u.abbreviation', 'like', '%' . $getUnitFilterDto->abbreviation . '%');
-        }
-
-        if ($getUnitFilterDto->format) {
-            $query->where('u.format', 'like', '%' . $getUnitFilterDto->format . '%');
-        }
-
-        return $query;
-    }
-
-    public function createUnit(CreateUnitDto $createUnitDto): UnitSummaryEntity
+    public function createUnit(CreateUnitDto $createUnitDto): UnitEntity
     {
         try {
             $unit = Unit::create([
@@ -92,9 +69,9 @@ class UnitRepository implements IUnitRepository
                 'updated_at' => now(),
             ]);
 
-            $unitSummaryEntity = GenericMapper::map($unit, UnitSummaryEntity::class);
+            $unitEntity = GenericMapper::map($unit, UnitEntity::class);
 
-            return $unitSummaryEntity;
+            return $unitEntity;
         } catch (Exception $e) {
             Log::error('Erro ao criar produto: ' . $e->getMessage());
             throw $e;
@@ -117,7 +94,7 @@ class UnitRepository implements IUnitRepository
         return true;
     }
 
-    public function updateUnit(int $unitId, CreateUnitDto $createUnitDto):  UnitSummaryEntity
+    public function updateUnit(int $unitId, CreateUnitDto $createUnitDto):  UnitEntity
     {
         $unit = Unit::where('id', $unitId)
                     ->where('owner_id', $createUnitDto->ownerId)
@@ -135,8 +112,31 @@ class UnitRepository implements IUnitRepository
             'updated_at' => now(),
         ]);
 
-        $unitEntity = GenericMapper::map($unit, UnitSummaryEntity::class);
+        $unitEntity = GenericMapper::map($unit, UnitEntity::class);
         
         return $unitEntity;
+    }
+
+    private function applyFilter($query, GetUnitFilterDto $getUnitFilterDto)
+    {
+        $query->where('u.owner_id', $getUnitFilterDto->ownerId);
+
+        if ($getUnitFilterDto->id) {
+            $query->where('u.id', $getUnitFilterDto->id);
+        }
+
+        if ($getUnitFilterDto->name) {
+            $query->where('u.name', 'like', '%' . $getUnitFilterDto->name . '%');
+        }
+
+        if ($getUnitFilterDto->abbreviation) {
+            $query->where('u.abbreviation', 'like', '%' . $getUnitFilterDto->abbreviation . '%');
+        }
+
+        if ($getUnitFilterDto->format) {
+            $query->where('u.format', 'like', '%' . $getUnitFilterDto->format . '%');
+        }
+
+        return $query;
     }
 }

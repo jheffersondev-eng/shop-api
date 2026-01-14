@@ -1,8 +1,8 @@
 <?php
 
-namespace Src\Domain\Entities;
+namespace Src\Application\Reponses\User;
 
-class UserSummaryEntity
+class UserDetailSummaryResponseDto
 {
     public function __construct(
         public int $id,

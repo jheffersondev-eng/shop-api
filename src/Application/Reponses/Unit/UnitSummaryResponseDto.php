@@ -1,13 +1,13 @@
 <?php
 
-namespace Src\Domain\Entities;
+namespace Src\Application\Reponses\Unit;
 
-class UnitSummaryEntity
+class UnitSummaryResponseDto
 {
     public function __construct(
         public int $id,
         public string $name,
         public string $abbreviation,
-        public int $format
+        public string $format
     ) {}
 }

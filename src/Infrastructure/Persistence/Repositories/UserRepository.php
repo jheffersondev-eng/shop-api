@@ -14,11 +14,9 @@ use Src\Application\Dto\User\UserDto;
 use Src\Application\Interfaces\Repositories\IUserDetailRepository;
 use Src\Application\Mappers\GenericMapper;
 use Src\Application\Mappers\UsersMapper;
-use Src\Domain\Entities\CreateUserEntity;
 use Src\Domain\Entities\UserEntity;
 use Src\Infrastructure\Persistence\Models\User;
 use Src\Infrastructure\Persistence\Models\UserDetail;
-use Src\Domain\Entities\UserSummaryEntity;
 
 class UserRepository implements IUserRepository
 {
@@ -82,7 +80,7 @@ class UserRepository implements IUserRepository
         }
     }
 
-    public function applyFilter($query, GetUserFilterDto $getUserFilterDto)
+    private function applyFilter($query, GetUserFilterDto $getUserFilterDto)
     {
         $query->where('u.owner_id', $getUserFilterDto->ownerId);
 
@@ -113,7 +111,7 @@ class UserRepository implements IUserRepository
         return $query;
     }
 
-    public function create(UserDto $userDto): CreateUserEntity
+    public function create(UserDto $userDto): UserEntity
     {
         $user = User::create([
             'email' => $userDto->email,
@@ -126,10 +124,10 @@ class UserRepository implements IUserRepository
             'updated_at' => now(),
         ]);
 
-        return GenericMapper::map($user, CreateUserEntity::class);
+        return GenericMapper::map($user, UserEntity::class);
     }
 
-    public function update(int $userId, UserDto $userDto): UserSummaryEntity
+    public function update(int $userId, UserDto $userDto): UserEntity
     {
         try {
             $user = User::find($userId);
@@ -152,17 +150,14 @@ class UserRepository implements IUserRepository
 
             $this->userDetailRepository->update($userDto->userDetailsDto);
 
-            return new UserSummaryEntity(
-                id: $user->id,
-                name: $userDetail->name ?? $userDto->userDetailsDto->name,
-            );
+            return GenericMapper::map($user, UserEntity::class);
         } catch (Exception $e) {
             Log::error('Erro ao atualizar usuário: ' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function save(CreateUserEntity $userEntity): void
+    public function save(UserEntity $userEntity): UserEntity
     {
         $user = User::find($userEntity->id);
 
@@ -173,7 +168,6 @@ class UserRepository implements IUserRepository
         $user->email = $userEntity->email;
         $user->owner_id = $userEntity->ownerId;
         $user->profile_id = $userEntity->profileId;
-        $user->password = $userEntity->password;
         $user->is_active = $userEntity->isActive;
         $user->user_id_created = $userEntity->userIdCreated;
         $user->user_id_updated = $userEntity->userIdUpdated;
@@ -181,8 +175,9 @@ class UserRepository implements IUserRepository
         $user->updated_at = $userEntity->updatedAt;
         $user->verification_code = $userEntity->verificationCode;
         $user->verification_expires_at = $userEntity->verificationExpiresAt;
-        
         $user->save();
+        
+        return GenericMapper::map($user, UserEntity::class);
     }
 
     public function delete(int $userId, int $userIdDeleted): bool
@@ -208,6 +203,17 @@ class UserRepository implements IUserRepository
     public function findByEmail(string $email): UserEntity|null
     {
         $user = User::where('email', $email)->first();
+        if (!$user) {
+            return null;
+        }
+
+        $userEntity = GenericMapper::map($user, UserEntity::class);
+        return $userEntity;
+    }
+
+    public function findById(int $id): UserEntity|null
+    {
+        $user = User::where('id', $id)->first();
         if (!$user) {
             return null;
         }

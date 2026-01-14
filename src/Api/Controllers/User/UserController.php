@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use Src\Api\Controllers\BaseController;
 use Src\Api\Requests\User\CreateUserRequest;
 use Src\Api\Requests\User\RegisterUserRequest;
+use Src\Api\Requests\User\ResendVerificationUserRequest;
 use Src\Api\Requests\User\UserByFilterRequest;
 use Src\Api\Requests\User\UpdateUserRequest;
+use Src\Api\Requests\User\VerifyUserRequest;
 use Src\Application\Interfaces\Services\IUserService;
 
 class UserController extends BaseController
@@ -60,6 +62,26 @@ class UserController extends BaseController
     {
         return $this->execute(
             callback: fn() => $this->userService->delete($id, Auth::id()),
+            statusCodeSuccess: 200
+        );
+    }
+
+    public function verify(VerifyUserRequest $request)
+    {
+        $dto = $request->getDto();
+
+        return $this->execute(
+            callback: fn() => $this->userService->verifyEmail($dto),
+            statusCodeSuccess: 200
+        );
+    }
+
+    public function resendVerifyEmail(ResendVerificationUserRequest $request)
+    {
+        $dto = $request->getDto();
+
+        return $this->execute(
+            callback: fn() => $this->userService->resendVerifyEmail($dto),
             statusCodeSuccess: 200
         );
     }

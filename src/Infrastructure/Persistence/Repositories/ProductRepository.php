@@ -14,9 +14,9 @@ use Src\Application\Mappers\ProductsMapper;
 use Illuminate\Support\Facades\Log;
 use Src\Application\Dto\Product\CreateProductDto;
 use Src\Application\Mappers\GenericMapper;
+use Src\Domain\Entities\ProductEntity;
 use Src\Infrastructure\Persistence\Models\Product;
 use Src\Infrastructure\Persistence\Models\ProductImage;
-use Src\Domain\Entities\ProductSummaryEntity;
 
 class ProductRepository implements IProductRepository
 {
@@ -78,58 +78,6 @@ class ProductRepository implements IProductRepository
         }
     }
 
-    private function addProductImages($products)
-    {
-        return $products->map(function($product) {
-            $images = $this->getProductImages($product->id);
-            $product->images = $images;
-            return $product;
-        });
-    }
-
-    private function applyFilter($query, GetProductFilterDto $getProductFilterDto)
-    {
-        $query->where('p.owner_id', $getProductFilterDto->ownerId);
-
-        if ($getProductFilterDto->id) {
-            $query->where('p.id', $getProductFilterDto->id);
-        }
-
-        if ($getProductFilterDto->name) {
-            $query->where('p.name', 'like', '%' . $getProductFilterDto->name . '%');
-        }
-
-        if ($getProductFilterDto->categoryId) {
-            $query->where('p.category_id', $getProductFilterDto->categoryId);
-        }
-
-        if ($getProductFilterDto->unitId) {
-            $query->where('p.unit_id', $getProductFilterDto->unitId);
-        }
-
-        if ($getProductFilterDto->barcode) {
-            $query->where('p.barcode', 'like', '%' . $getProductFilterDto->barcode . '%');
-        }
-
-        if ($getProductFilterDto->isActive !== null) {
-            $query->where('p.is_active', $getProductFilterDto->isActive);
-        }
-
-        if($getProductFilterDto->userIdCreated) {
-            $query->where('p.user_id_created', $getProductFilterDto->userIdCreated);
-        }
-
-        if($getProductFilterDto->dateDe) {
-            $query->where('p.created_at', '>=', $getProductFilterDto->dateDe->format('Y-m-d H:i:s'));
-        }
-
-        if($getProductFilterDto->dateAte) {
-            $query->where('p.created_at', '<=', $getProductFilterDto->dateAte->format('Y-m-d H:i:s'));
-        }
-
-        return $query;
-    }
-
     public function getProductImages(int $productId): array
     {
         return DB::table('product_images')
@@ -145,7 +93,7 @@ class ProductRepository implements IProductRepository
             ->toArray();
     }
 
-    public function createProduct(CreateProductDto $createProductDto): ProductSummaryEntity
+    public function createProduct(CreateProductDto $createProductDto): ProductEntity
     {
         try {
             $product = Product::create([
@@ -165,9 +113,9 @@ class ProductRepository implements IProductRepository
                 'updated_at' => now(),
             ]);
 
-            $productSummaryEntity = GenericMapper::map($product, ProductSummaryEntity::class);
+            $productEntity = GenericMapper::map($product, ProductEntity::class);
 
-            return $productSummaryEntity; 
+            return $productEntity; 
         } catch (Exception $e) {
             Log::error('Erro ao criar produto: ' . $e->getMessage());
             throw $e;
@@ -224,7 +172,7 @@ class ProductRepository implements IProductRepository
         return true;
     }
 
-    public function updateProduct(int $productId, CreateProductDto $createProductDto):  ProductSummaryEntity
+    public function updateProduct(int $productId, CreateProductDto $createProductDto):  ProductEntity
     {
         $product = Product::where('id', $productId)
                     ->where('owner_id', $createProductDto->ownerId)
@@ -249,8 +197,60 @@ class ProductRepository implements IProductRepository
             'updated_at' => now(),
         ]);
 
-        $productSummaryEntity = GenericMapper::map($product, ProductSummaryEntity::class);
+        $productEntity = GenericMapper::map($product, ProductEntity::class);
         
-        return $productSummaryEntity;
+        return $productEntity;
+    }
+
+    private function addProductImages($products)
+    {
+        return $products->map(function($product) {
+            $images = $this->getProductImages($product->id);
+            $product->images = $images;
+            return $product;
+        });
+    }
+
+    private function applyFilter($query, GetProductFilterDto $getProductFilterDto)
+    {
+        $query->where('p.owner_id', $getProductFilterDto->ownerId);
+
+        if ($getProductFilterDto->id) {
+            $query->where('p.id', $getProductFilterDto->id);
+        }
+
+        if ($getProductFilterDto->name) {
+            $query->where('p.name', 'like', '%' . $getProductFilterDto->name . '%');
+        }
+
+        if ($getProductFilterDto->categoryId) {
+            $query->where('p.category_id', $getProductFilterDto->categoryId);
+        }
+
+        if ($getProductFilterDto->unitId) {
+            $query->where('p.unit_id', $getProductFilterDto->unitId);
+        }
+
+        if ($getProductFilterDto->barcode) {
+            $query->where('p.barcode', 'like', '%' . $getProductFilterDto->barcode . '%');
+        }
+
+        if ($getProductFilterDto->isActive !== null) {
+            $query->where('p.is_active', $getProductFilterDto->isActive);
+        }
+
+        if($getProductFilterDto->userIdCreated) {
+            $query->where('p.user_id_created', $getProductFilterDto->userIdCreated);
+        }
+
+        if($getProductFilterDto->dateDe) {
+            $query->where('p.created_at', '>=', $getProductFilterDto->dateDe->format('Y-m-d H:i:s'));
+        }
+
+        if($getProductFilterDto->dateAte) {
+            $query->where('p.created_at', '<=', $getProductFilterDto->dateAte->format('Y-m-d H:i:s'));
+        }
+
+        return $query;
     }
 }

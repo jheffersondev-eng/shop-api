@@ -11,11 +11,15 @@ use Src\Application\Exceptions\ProductNotFoundException;
 use Src\Application\Exceptions\UnauthorizedException;
 use Src\Application\Interfaces\Repositories\IProductRepository;
 use Src\Application\Interfaces\Services\IProductService;
+use Src\Application\UseCase\Product\CreateProductUseCase;
+use Src\Application\UseCase\Product\DeleteProductUseCase;
 
 class ProductService implements IProductService
 {
     public function __construct(
-        private IProductRepository $productRepository
+        private IProductRepository $productRepository,
+        private CreateProductUseCase $createProductUseCase,
+        private DeleteProductUseCase $deleteProductUseCase
     ) {}
 
     public function getProductsByFilter(GetProductFilterDto $getProductFilterDto): ServiceResult
@@ -33,32 +37,10 @@ class ProductService implements IProductService
         }
     }
 
-    public function getProductImages(int $productId): ServiceResult
-    {
-        try {
-            $images = $this->productRepository->getProductImages($productId);
-
-            return ServiceResult::ok(
-                data: $images,
-                message: 'Imagens do produto obtidas com sucesso.'
-            );
-        } catch (Exception $e) {
-            Log::error('Erro ao obter imagens do produto: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
     public function createProduct(CreateProductDto $createProductDto): ServiceResult
     {
         try {
-            $product = $this->productRepository->createProduct($createProductDto);
-            $images = $this->productRepository->createProductImages($product->id, $createProductDto->images);
-            $product->images = $images;
-
-            return ServiceResult::ok(
-                data: $product,
-                message: 'Produto criado com sucesso.'
-            );
+            return $this->createProductUseCase->createProduct($createProductDto);
         } catch (Exception $e) {
             Log::error('Erro ao criar produto: ' . $e->getMessage());
             throw $e;
@@ -68,17 +50,7 @@ class ProductService implements IProductService
     public function deleteProduct(int $productId, int $userIdDeleted): ServiceResult
     {
         try {
-            $this->productRepository->deleteProduct($productId, $userIdDeleted);
-            $images = $this->productRepository->getProductImages($productId);
-
-            foreach ($images as $image) {
-                $this->productRepository->deleteProductImage($image->id);
-            }
-            
-            return ServiceResult::ok(
-                data: null,
-                message: 'Produto excluído com sucesso.'
-            );
+            return $this->deleteProductUseCase->deleteProduct($productId, $userIdDeleted);
         } catch (ProductNotFoundException $e) {
             Log::error('Produto não encontrado: ' . $e->getMessage());
             throw $e;
