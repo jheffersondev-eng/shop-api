@@ -13,6 +13,7 @@ interface IProductRepository
     public function create(CreateProductDto $createProductDto): ProductEntity;
     public function createProductImages(int $productId, array $images): array;
     public function update(int $productId, CreateProductDto $createProductDto): ProductEntity;
+    public function updateProductImages(int $productId, int $ownerId, array $images): array;
     public function delete(int $productId, int $userIdDeleted): bool;
     public function deleteProductImage(int $imageId): bool;
 }

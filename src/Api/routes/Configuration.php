@@ -4,6 +4,7 @@ namespace Src\Api\routes;
 
 use Src\Api\routes\Auth\AuthModule;
 use Src\Api\routes\Category\CategoryModule;
+use Src\Api\routes\Company\CompanyModule;
 use Src\Api\routes\Product\ProductModule;
 use Src\Api\routes\Profile\ProfileModule;
 use Src\Api\routes\Unit\UnitModule;
@@ -20,6 +21,7 @@ class Configuration
             new CategoryModule(),
             new UserModule(),
             new ProfileModule(),
+            new CompanyModule(),
         ];
     }
 }

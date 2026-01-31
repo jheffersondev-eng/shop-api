@@ -59,7 +59,7 @@ class CategoryRepository implements ICategoryRepository
         }
     }
 
-    public function createCategory(CreateCategoryDto $createCategoryDto): CategoryEntity
+    public function create(CreateCategoryDto $createCategoryDto): CategoryEntity
     {
         try {
             $category = Category::create([
@@ -80,7 +80,7 @@ class CategoryRepository implements ICategoryRepository
         }
     }
 
-    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto):  CategoryEntity
+    public function update(int $categoryId, CreateCategoryDto $createCategoryDto):  CategoryEntity
     {
         $category = Category::where('id', $categoryId)
                     ->where('owner_id', $createCategoryDto->ownerId)
@@ -102,7 +102,7 @@ class CategoryRepository implements ICategoryRepository
         return $categoryEntity;
     }
 
-    public function deleteCategory(int $categoryId, int $userIdDeleted): bool
+    public function delete(int $categoryId, int $userIdDeleted): bool
     {
         $category = Category::where('id', $categoryId)->first();
 

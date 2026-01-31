@@ -205,6 +205,25 @@ class ProductRepository implements IProductRepository
         return $productEntity;
     }
 
+    public function updateProductImages(int $productId, int $ownerId, array $images): array
+    {
+        $product = Product::where('id', $productId)
+                    ->where('owner_id', $ownerId)
+                    ->first();
+
+        if (!$product) {
+            throw new ProductNotFoundException();
+        }
+
+        foreach ($product->images as $image) {
+            $this->deleteProductImage($image->id);
+        }
+
+        $createdImages = $this->createProductImages($productId, $images);
+
+        return $createdImages;
+    }
+
     private function addProductImages($products)
     {
         return $products->map(function($product) {

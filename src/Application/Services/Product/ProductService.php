@@ -13,12 +13,14 @@ use Src\Application\Interfaces\Repositories\IProductRepository;
 use Src\Application\Interfaces\Services\IProductService;
 use Src\Application\UseCase\Product\CreateProductUseCase;
 use Src\Application\UseCase\Product\DeleteProductUseCase;
+use Src\Application\UseCase\Product\UpdateProductUseCase;
 
 class ProductService implements IProductService
 {
     public function __construct(
         private IProductRepository $productRepository,
         private CreateProductUseCase $createProductUseCase,
+        private UpdateProductUseCase $updateProductUseCase,
         private DeleteProductUseCase $deleteProductUseCase
     ) {}
 
@@ -63,7 +65,7 @@ class ProductService implements IProductService
     public function update(int $productId, CreateProductDto $createProductDto): ServiceResult
     {
         try {
-            $product = $this->productRepository->update($productId, $createProductDto);
+            $product = $this->updateProductUseCase->updateProduct($productId, $createProductDto);
 
             return ServiceResult::ok(
                 data: $product,

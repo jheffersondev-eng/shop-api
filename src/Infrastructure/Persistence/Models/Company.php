@@ -2,40 +2,45 @@
 
 namespace Src\Infrastructure\Persistence\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Company extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasUuids, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
-        'id',
         'owner_id',
-        'name',
-        'category_id',
-        'unit_id',
-        'barcode',
+        'fantasy_name',
+        'description',
+        'legal_name',
+        'document',
+        'email',
+        'phone',
+        'image',
+        'primary_color',
+        'secondary_color',
+        'domain',
+        'zip_code',
+        'state',
+        'city',
+        'neighborhood',
+        'street',
+        'number',
+        'complement',
         'is_active',
-        'price',
-        'cost_price',
-        'stock_quantity',
-        'min_quantity',
         'user_id_created',
         'user_id_updated',
         'user_id_deleted',
     ];
 
     protected $casts = [
+        'is_active' => 'boolean',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'created_at' => 'datetime',
     ];
-
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class, 'product_id', 'id');
-    }
 }

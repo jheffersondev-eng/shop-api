@@ -35,7 +35,7 @@ class CategoryService implements ICategoryService
     public function create(CreateCategoryDto $createCategoryDto): ServiceResult
     {
         try {
-            $category = $this->categoryRepository->createCategory($createCategoryDto);
+            $category = $this->categoryRepository->create($createCategoryDto);
 
             return ServiceResult::ok(
                 data: $category,
@@ -47,28 +47,10 @@ class CategoryService implements ICategoryService
         }
     }
 
-    public function delete(int $categoryId, int $userIdDeleted): ServiceResult
-    {
-        try {
-            $this->categoryRepository->deleteCategory($categoryId, $userIdDeleted);
-            
-            return ServiceResult::ok(
-                data: null,
-                message: 'Categoria excluída com sucesso.'
-            );
-        } catch (CategoryNotFoundException $e) {
-            Log::error('Categoria não encontrada: ' . $e->getMessage());
-            throw $e;
-        } catch (Exception $e) {
-            Log::error('Erro ao excluir categoria: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
     public function update(int $categoryId, CreateCategoryDto $createCategoryDto): ServiceResult
     {
         try {
-            $category = $this->categoryRepository->updateCategory($categoryId, $createCategoryDto);
+            $category = $this->categoryRepository->update($categoryId, $createCategoryDto);
             
             return ServiceResult::ok(
                 data: $category,
@@ -79,6 +61,24 @@ class CategoryService implements ICategoryService
             throw $e;
         } catch (Exception $e) {
             Log::error('Erro ao atualizar categoria: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function delete(int $categoryId, int $userIdDeleted): ServiceResult
+    {
+        try {
+            $this->categoryRepository->delete($categoryId, $userIdDeleted);
+            
+            return ServiceResult::ok(
+                data: null,
+                message: 'Categoria excluída com sucesso.'
+            );
+        } catch (CategoryNotFoundException $e) {
+            Log::error('Categoria não encontrada: ' . $e->getMessage());
+            throw $e;
+        } catch (Exception $e) {
+            Log::error('Erro ao excluir categoria: ' . $e->getMessage());
             throw $e;
         }
     }
