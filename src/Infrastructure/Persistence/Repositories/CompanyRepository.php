@@ -2,6 +2,7 @@
 
 namespace Src\Infrastructure\Persistence\Repositories;
 
+use COM;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +77,17 @@ class CompanyRepository implements ICompanyRepository
             Log::error('Erro ao filtrar categorias: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    public function getCompany(int $ownerId): CompanyEntity
+    {
+        $compay = Company::where('owner_id', $ownerId)->first();
+
+        if (!$compay) {
+            throw new CompanyNotFoundException("Este proprietário não possui uma empresa cadastrada.");
+        }
+
+        return GenericMapper::map($compay, CompanyEntity::class);
     }
 
     public function create(CreateCompanyDto $createCompanyDto): CompanyEntity

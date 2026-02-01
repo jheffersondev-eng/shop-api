@@ -9,6 +9,7 @@ use Src\Domain\Entities\CompanyEntity;
 interface ICompanyRepository
 {
     public function getCompaniesByFilter(GetCompanyFilterDto $getCompanyFilterDto): array;
+    public function getCompany(int $ownerId): CompanyEntity;
     public function create(CreateCompanyDto $createCompanyDto): CompanyEntity;
     public function update(string $companyId, CreateCompanyDto $createCompanyDto): CompanyEntity;
     public function delete(string $companyId, int $userIdDeleted): bool;

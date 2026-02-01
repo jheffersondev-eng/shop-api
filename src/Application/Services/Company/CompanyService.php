@@ -32,6 +32,21 @@ class CompanyService implements ICompanyService
         }
     }
 
+    public function getCompany(int $ownerId): ServiceResult
+    {
+        try {
+            $data = $this->companyRepository->getCompany($ownerId);
+
+            return ServiceResult::ok(
+                data: $data,
+                message: 'Empresa obtida com sucesso.'
+            );
+        } catch (Exception $e) {
+            Log::error('Erro ao obter empresa: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function create(CreateCompanyDto $createCompanyDto): ServiceResult
     {
         try {

@@ -2,6 +2,7 @@
 
 namespace Src\Api\Controllers\Company;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Src\Api\Controllers\BaseController;
 use Src\Api\Requests\Company\CompanyByFilterRequest;
@@ -16,11 +17,21 @@ class CompanyController extends BaseController
     ) {}
 
     public function getCompaniesByFilter(CompanyByFilterRequest $request)
-    {        
+    {
         $dto = $request->getDto();
 
         return $this->execute(
             callback: fn() => $this->companyService->getCompaniesByFilter($dto),
+            statusCodeSuccess: 200
+        );
+    }
+
+    public function getCompany(Request $request)
+    {
+        $ownerId = Auth::user()->owner_id;
+
+        return $this->execute(
+            callback: fn() => $this->companyService->getCompany($ownerId),
             statusCodeSuccess: 200
         );
     }
