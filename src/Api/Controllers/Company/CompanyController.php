@@ -16,7 +16,7 @@ class CompanyController extends BaseController
         private ICompanyService $companyService
     ) {}
 
-    public function getCompaniesByFilter(CompanyByFilterRequest $request)
+    public function getAllCompaniesByFilter(CompanyByFilterRequest $request)
     {
         $dto = $request->getDto();
 

@@ -2,8 +2,6 @@
 
 namespace Src\Domain\Entities;
 
-use DateTime;
-
 class CompanyEntity
 {
     public function __construct(
@@ -11,10 +9,12 @@ class CompanyEntity
         public int $ownerId,
         public string $fantasyName,
         public string $description,
+        public string $slogan,
         public string $legalName,
         public string $document,
         public string $email,
         public string $image,
+        public string $imageBanner,
         public string $primaryColor,
         public string $secondaryColor,
         public string $domain,

@@ -50,6 +50,8 @@ class CompaniesMapper
                 complement: $company->complement,
                 isActive: $company->is_active,
                 image: $company->image,
+                imageBanner: $company->image_banner,
+                slogan: $company->slogan,
                 description: $company->description,
                 userCreated: $userCreated,
                 userUpdated: $userUpdated,

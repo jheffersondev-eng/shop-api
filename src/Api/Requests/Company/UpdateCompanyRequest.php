@@ -28,6 +28,7 @@ class UpdateCompanyRequest extends BaseRequest
             'email' => 'required|email|max:100',
             'phone' => 'required|string|max:15',
             'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
+            'image_banner' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
             'primary_color' => 'required|string|max:7',
             'secondary_color' => 'required|string|max:7',
             'domain' => 'required|string|max:100',
@@ -39,6 +40,7 @@ class UpdateCompanyRequest extends BaseRequest
             'number' => 'required|string|max:20',
             'complement' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
+            'slogan' => 'nullable|string|max:40',   
             'is_active' => 'required|boolean',
         ];
 
@@ -74,9 +76,11 @@ class UpdateCompanyRequest extends BaseRequest
             'street.required' => 'A rua é obrigatória.',
             'number.required' => 'O número é obrigatório.',
             'image.required' => 'A imagem é obrigatória.',
+            'image_banner.required' => 'A imagem do banner é obrigatória.',
             'primary_color.required' => 'A cor primária é obrigatória.',
             'secondary_color.required' => 'A cor secundária é obrigatória.',
             'complement.required' => 'Deve ter no maximo 255 caracteres.',
+            'slogan.max' => 'O slogan deve ter no máximo 40 caracteres.',
         ];
     }
 
@@ -90,6 +94,7 @@ class UpdateCompanyRequest extends BaseRequest
             email: $this->input('email'),
             phone: $this->input('phone'),
             image: $this->file('image'),
+            imageBanner: $this->file('image_banner'),
             primaryColor: $this->input('primary_color'),
             secondaryColor: $this->input('secondary_color'),
             neighborhood: $this->input('neighborhood'),
@@ -101,6 +106,7 @@ class UpdateCompanyRequest extends BaseRequest
             number: $this->input('number'),
             complement: $this->input('complement'),
             description: $this->input('description'),
+            slogan: $this->input('slogan'),
             isActive: $this->input('is_active', true),
             userIdCreated: $this->getUserId(),
             userIdUpdated: $this->getUserId(),

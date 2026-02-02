@@ -3,13 +3,10 @@
 namespace Src\Api\Requests\Company;
 
 use Src\Api\Requests\BaseRequest;
-use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Company\GetCompanyFilterDto;
 
 class CompanyByFilterRequest extends BaseRequest
 {
-    use GetAuthenticatedUser;
-
     public function authorize(): bool
     {
         return true;
@@ -22,6 +19,8 @@ class CompanyByFilterRequest extends BaseRequest
         $rules = [
             'id' => 'nullable|string',
             'name' => 'nullable|string',
+            'page' => 'nullable|integer|min:1',
+            'page_size' => 'nullable|integer|min:1|max:100',
         ];
 
         return $rules;
@@ -46,7 +45,6 @@ class CompanyByFilterRequest extends BaseRequest
     {
         return new GetCompanyFilterDto(
             id: $this->input('id'),
-            ownerId: $this->getOwnerId(),
             name: $this->input('name'),
             page: $this->input('page', 1),
             pageSize: $this->input('page_size', 10),

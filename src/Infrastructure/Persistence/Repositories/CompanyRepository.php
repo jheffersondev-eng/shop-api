@@ -39,11 +39,13 @@ class CompanyRepository implements ICompanyRepository
                 'c.owner_id',
                 'c.fantasy_name',
                 'c.description',
+                'c.slogan',
                 'c.legal_name',
                 'c.document',
                 'c.email',
                 'c.phone',
                 'c.image',
+                'c.image_banner',
                 'c.primary_color',
                 'c.secondary_color',
                 'c.domain',
@@ -100,6 +102,7 @@ class CompanyRepository implements ICompanyRepository
             }
 
             $image = $this->saveImage($createCompanyDto->image);
+            $imageBanner = $this->saveImage($createCompanyDto->imageBanner);
 
             $company = Company::create([
                 'owner_id' => $createCompanyDto->ownerId,
@@ -110,6 +113,7 @@ class CompanyRepository implements ICompanyRepository
                 'email' => $createCompanyDto->email,
                 'phone' => $createCompanyDto->phone,
                 'image' => $image,
+                'image_banner' => $imageBanner,
                 'primary_color' => $createCompanyDto->primaryColor,
                 'secondary_color' => $createCompanyDto->secondaryColor,
                 'domain' => $createCompanyDto->domain,
@@ -120,6 +124,7 @@ class CompanyRepository implements ICompanyRepository
                 'street' => $createCompanyDto->street,
                 'number' => $createCompanyDto->number,
                 'complement' => $createCompanyDto->complement,
+                'slogan' => $createCompanyDto->slogan,
                 'is_active' => $createCompanyDto->isActive,
                 'user_id_created' => $createCompanyDto->userIdCreated,
                 'created_at' => now(),
@@ -145,7 +150,8 @@ class CompanyRepository implements ICompanyRepository
             throw new CompanyNotFoundException();
         }
 
-        $image = $createCompanyDto->image ? $this->updateImage($companyId, $createCompanyDto->image) : $company->image;
+        $image = $createCompanyDto->image ? $this->updateImage($companyId, $createCompanyDto->image, $company->image) : $company->image;
+        $imageBanner = $createCompanyDto->imageBanner ? $this->updateImage($companyId, $createCompanyDto->imageBanner, $company->image_banner) : $company->image_banner;
 
         $company->update([
             'owner_id' => $createCompanyDto->ownerId,
@@ -156,6 +162,7 @@ class CompanyRepository implements ICompanyRepository
             'email' => $createCompanyDto->email,
             'phone' => $createCompanyDto->phone,
             'image' => $image,
+            'image_banner' => $imageBanner,
             'primary_color' => $createCompanyDto->primaryColor,
             'secondary_color' => $createCompanyDto->secondaryColor,
             'domain' => $createCompanyDto->domain,
@@ -166,6 +173,7 @@ class CompanyRepository implements ICompanyRepository
             'street' => $createCompanyDto->street,
             'number' => $createCompanyDto->number,
             'complement' => $createCompanyDto->complement,
+            'slogan' => $createCompanyDto->slogan,
             'is_active' => $createCompanyDto->isActive,
             'user_id_updated' => $createCompanyDto->userIdUpdated,
             'updated_at' => now(),
@@ -184,6 +192,14 @@ class CompanyRepository implements ICompanyRepository
             throw new CompanyNotFoundException('Empresa já foi deletada.');
         }
 
+        if ($company && $company->image && Storage::disk('shop_storage')->exists($company->image)) {
+            Storage::disk('shop_storage')->delete($company->image);
+        }
+
+        if ($company && $company->image_banner && Storage::disk('shop_storage')->exists($company->image_banner)) {
+            Storage::disk('shop_storage')->delete($company->image_banner);
+        }
+
         $company->user_id_updated = $userIdDeleted;
         $company->deleted_at = now();
         $company->save();
@@ -193,8 +209,6 @@ class CompanyRepository implements ICompanyRepository
 
     private function applyFilter($query, GetCompanyFilterDto $getCompanyFilterDto)
     {
-        $query->where('c.owner_id', $getCompanyFilterDto->ownerId);
-
         if ($getCompanyFilterDto->id) {
             $query->where('c.id', $getCompanyFilterDto->id);
         }
@@ -212,7 +226,7 @@ class CompanyRepository implements ICompanyRepository
         return $imagePath;
     }
 
-    private function updateImage(string $companyId, UploadedFile $image): string
+    private function updateImage(string $companyId, UploadedFile $image, string $oldImage): string
     {
         $company = Company::find($companyId);
 
@@ -220,8 +234,8 @@ class CompanyRepository implements ICompanyRepository
             throw new CompanyNotFoundException();
         }
 
-        if ($company && $company->image && Storage::disk('shop_storage')->exists($company->image)) {
-            Storage::disk('shop_storage')->delete($company->image);
+        if ($company && $oldImage && Storage::disk('shop_storage')->exists($oldImage)) {
+            Storage::disk('shop_storage')->delete($oldImage);
         }
         
         return $this->saveImage($image);
