@@ -32,7 +32,7 @@ class ProductsMapper
             
             return new GetProductsByFilterResponseDto(
                 id: $product->id,
-                name: $product->name,
+                name: ucfirst(strtolower($product->name)),
                 owner: new UserDetailSummaryResponseDto(
                     id: $product->owner_id,
                     name: $product->owner_name

@@ -33,4 +33,9 @@ class Product extends Model
         'deleted_at' => 'datetime',
         'created_at' => 'datetime',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'id')->withoutTrashed();
+    }
 }

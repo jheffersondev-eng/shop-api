@@ -9,7 +9,7 @@ use Src\Domain\Entities\CategoryEntity;
 interface ICategoryRepository
 {
     public function getCategoriesByFilter(GetCategoryFilterDto $getCategoryFilterDto): array;
-    public function createCategory(CreateCategoryDto $createCategoryDto): CategoryEntity;
-    public function updateCategory(int $categoryId, CreateCategoryDto $createCategoryDto): CategoryEntity;
-    public function deleteCategory(int $categoryId, int $userIdDeleted): bool;
+    public function create(CreateCategoryDto $createCategoryDto): CategoryEntity;
+    public function update(int $categoryId, CreateCategoryDto $createCategoryDto): CategoryEntity;
+    public function delete(int $categoryId, int $userIdDeleted): bool;
 }

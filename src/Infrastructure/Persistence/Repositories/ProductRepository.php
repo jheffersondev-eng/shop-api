@@ -70,6 +70,62 @@ class ProductRepository implements IProductRepository
             );
 
             $query = $this->applyFilter($query, $getProductFilterDto);
+
+            $offset = ($getProductFilterDto->page - 1) * $getProductFilterDto->pageSize;
+            $products = $query->offset($offset)->limit($getProductFilterDto->pageSize)->get();
+            $productsWithImages = $this->addProductImages($products);
+
+            return $this->mapper->map($productsWithImages);
+        } catch (Exception $e) {
+            Log::error('Erro ao filtrar produtos: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function getAllProductsByFilter(GetProductFilterDto $getProductFilterDto): array
+    {
+        try {
+            $query = DB::table('products as p')
+            ->join('categories as c', 'p.category_id', '=', 'c.id')
+            ->join('units as u', 'p.unit_id', '=', 'u.id')
+            ->leftJoin('user_details as udo', 'p.owner_id', '=', 'udo.id')
+            ->leftJoin('user_details as udc', 'p.user_id_created', '=', 'udc.id')
+            ->leftJoin('user_details as udu', 'p.user_id_updated', '=', 'udu.id')
+            ->leftJoin('user_details as udd', 'p.user_id_deleted', '=', 'udd.id')
+            ->select(
+                'p.id as id',
+                'p.name',
+                'p.description',
+                'p.barcode',
+                'p.is_active',
+                'p.price',
+                'p.cost_price',
+                'p.stock_quantity',
+                'p.min_quantity',
+                'p.user_id_created as user_id_created',
+                'p.user_id_updated as user_id_updated',
+                'p.user_id_deleted as user_id_deleted',
+                'p.created_at',
+                'p.updated_at',
+                'p.deleted_at',
+                'c.id as category_id',
+                'c.name as category_name',
+                'u.id as unit_id',
+                'u.name as unit_name',
+                'u.abbreviation as unit_abbreviation',
+                'u.format as unit_format',
+                'udo.id as owner_id',
+                'udo.name as owner_name',
+                'udc.id as user_created_id',
+                'udc.name as user_created_name',
+                'udu.id as user_updated_id',
+                'udu.name as user_updated_name',
+                'udd.id as user_deleted_id',
+                'udd.name as user_deleted_name'
+            );
+
+            $query = $this->applyOptionalFilter($query, $getProductFilterDto);
+
             $offset = ($getProductFilterDto->page - 1) * $getProductFilterDto->pageSize;
             $products = $query->offset($offset)->limit($getProductFilterDto->pageSize)->get();
             $productsWithImages = $this->addProductImages($products);
@@ -92,6 +148,7 @@ class ProductRepository implements IProductRepository
                 'updated_at'
             )
             ->where('product_id', $productId)
+            ->whereNull('deleted_at')
             ->get()
             ->toArray();
     }
@@ -205,6 +262,25 @@ class ProductRepository implements IProductRepository
         return $productEntity;
     }
 
+    public function updateProductImages(int $productId, int $ownerId, array $images): array
+    {
+        $product = Product::where('id', $productId)
+                    ->where('owner_id', $ownerId)
+                    ->first();
+
+        if (!$product) {
+            throw new ProductNotFoundException();
+        }
+
+        foreach ($product->images as $image) {
+            $this->deleteProductImage($image->id);
+        }
+
+        $createdImages = $this->createProductImages($productId, $images);
+
+        return $createdImages;
+    }
+
     private function addProductImages($products)
     {
         return $products->map(function($product) {
@@ -252,6 +328,27 @@ class ProductRepository implements IProductRepository
 
         if($getProductFilterDto->dateAte) {
             $query->where('p.created_at', '<=', $getProductFilterDto->dateAte->format('Y-m-d H:i:s'));
+        }
+
+        return $query;
+    }
+
+    private function applyOptionalFilter($query, GetProductFilterDto $getProductFilterDto)
+    {
+        if($getProductFilterDto->ownerId) {
+            $query->where('p.owner_id', $getProductFilterDto->ownerId);
+        }
+
+        if ($getProductFilterDto->name) {
+            $query->where('p.name', 'like', '%' . $getProductFilterDto->name . '%');
+        }
+
+        if ($getProductFilterDto->categoryId) {
+            $query->where('p.category_id', $getProductFilterDto->categoryId);
+        }
+
+        if ($getProductFilterDto->unitId) {
+            $query->where('p.unit_id', $getProductFilterDto->unitId);
         }
 
         return $query;

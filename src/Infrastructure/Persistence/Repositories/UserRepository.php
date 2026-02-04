@@ -177,6 +177,7 @@ class UserRepository implements IUserRepository
         $user->created_at = $userEntity->createdAt;
         $user->updated_at = $userEntity->updatedAt;
         $user->verification_code = $userEntity->verificationCode;
+        $user->email_verified_at = $userEntity->emailVerifiedAt;
         $user->verification_expires_at = $userEntity->verificationExpiresAt;
         $user->save();
         

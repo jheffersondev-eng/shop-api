@@ -4,13 +4,10 @@ namespace Src\Api\Requests\Product;
 
 use DateTime;
 use Src\Api\Requests\BaseRequest;
-use Src\Api\Requests\Traits\GetAuthenticatedUser;
 use Src\Application\Dto\Product\GetProductFilterDto;
 
-class ProductByFilterRequest extends BaseRequest
+class ProductAllByFilterRequest extends BaseRequest
 {
-    use GetAuthenticatedUser;
-
     public function authorize(): bool
     {
         return true;
@@ -22,6 +19,7 @@ class ProductByFilterRequest extends BaseRequest
 
         $rules = [
             'id' => 'nullable|integer',
+            'owner_id' => 'nullable|integer',
             'name' => 'nullable|string',
             'category_id' => 'nullable|integer',
             'unit_id' => 'nullable|integer',
@@ -67,7 +65,7 @@ class ProductByFilterRequest extends BaseRequest
     {
         return new GetProductFilterDto(
             id: $this->input('id'),
-            ownerId: $this->getOwnerId(),
+            ownerId: $this->input('owner_id'),
             name: $this->input('name'),
             categoryId: $this->input('category_id'),
             unitId: $this->input('unit_id'),
