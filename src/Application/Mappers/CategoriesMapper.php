@@ -29,7 +29,7 @@ class CategoriesMapper
 
             return new GetCategoryByFilterResponseDto(
                 id: $category->id,
-                name: $category->name,
+                name: ucfirst(strtolower($category->name)),
                 owner: new UserDetailSummaryResponseDto(
                     id: $category->owner_id,
                     name: $category->owner_name

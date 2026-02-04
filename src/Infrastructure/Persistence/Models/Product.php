@@ -36,6 +36,6 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class, 'product_id', 'id');
+        return $this->hasMany(ProductImage::class, 'product_id', 'id')->withoutTrashed();
     }
 }

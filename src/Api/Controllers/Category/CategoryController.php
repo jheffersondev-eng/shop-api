@@ -4,6 +4,7 @@ namespace Src\Api\Controllers\Category;
 
 use Illuminate\Support\Facades\Auth;
 use Src\Api\Controllers\BaseController;
+use Src\Api\Requests\Category\CategoryByFilterPublicRequest;
 use Src\Api\Requests\Category\CreateCategoryRequest;
 use Src\Api\Requests\Category\CategoryByFilterRequest;
 use Src\Api\Requests\Category\UpdateCategoryRequest;
@@ -16,6 +17,16 @@ class CategoryController extends BaseController
     ) {}
 
     public function getCategoriesByFilter(CategoryByFilterRequest $request)
+    {        
+        $dto = $request->getDto();
+
+        return $this->execute(
+            callback: fn() => $this->categoryService->getCategoriesByFilter($dto),
+            statusCodeSuccess: 200
+        );
+    }
+
+    public function getAllCategoriesByFilter(CategoryByFilterPublicRequest $request)
     {        
         $dto = $request->getDto();
 

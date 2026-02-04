@@ -5,6 +5,7 @@ namespace Src\Api\Controllers\Product;
 use Illuminate\Support\Facades\Auth;
 use Src\Api\Controllers\BaseController;
 use Src\Api\Requests\Product\CreateProductRequest;
+use Src\Api\Requests\Product\ProductAllByFilterRequest;
 use Src\Api\Requests\Product\ProductByFilterRequest;
 use Src\Api\Requests\Product\UpdateProductRequest;
 use Src\Application\Interfaces\Services\IProductService;
@@ -21,6 +22,16 @@ class ProductController extends BaseController
 
         return $this->execute(
             callback: fn() => $this->productService->getProductsByFilter($dto),
+            statusCodeSuccess: 200
+        );
+    }
+
+    public function getAllProductsByFilter(ProductAllByFilterRequest $request)
+    {        
+        $dto = $request->getDto();
+
+        return $this->execute(
+            callback: fn() => $this->productService->getAllProductsByFilter($dto),
             statusCodeSuccess: 200
         );
     }

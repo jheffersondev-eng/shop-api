@@ -9,6 +9,7 @@ use Src\Domain\Entities\ProductEntity;
 interface IProductRepository
 {
     public function getProductsByFilter(GetProductFilterDto $getProductFilterDto): array;
+    public function getAllProductsByFilter(GetProductFilterDto $getProductFilterDto): array;
     public function getProductImages(int $productId): array;
     public function create(CreateProductDto $createProductDto): ProductEntity;
     public function createProductImages(int $productId, array $images): array;

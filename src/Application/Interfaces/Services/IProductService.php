@@ -9,6 +9,7 @@ use Src\Application\Services\ServiceResult;
 interface IProductService
 {
     public function getProductsByFilter(GetProductFilterDto $getProductFilterDto): ServiceResult;
+    public function getAllProductsByFilter(GetProductFilterDto $getProductFilterDto): ServiceResult;
     public function create(CreateProductDto $createProductDto): ServiceResult;
     public function delete(int $productId, int $userIdDeleted): ServiceResult;
     public function update(int $productId, CreateProductDto $createProductDto): ServiceResult;

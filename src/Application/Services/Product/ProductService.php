@@ -39,6 +39,21 @@ class ProductService implements IProductService
         }
     }
 
+    public function getAllProductsByFilter(GetProductFilterDto $getProductFilterDto): ServiceResult
+    {
+        try {
+            $data = $this->productRepository->getAllProductsByFilter($getProductFilterDto);
+            
+            return ServiceResult::ok(
+                data: $data,
+                message: 'Todos os produtos filtrados com sucesso.'
+            );
+        } catch (Exception $e) {
+            Log::error('Erro ao filtrar todos os produtos: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function create(CreateProductDto $createProductDto): ServiceResult
     {
         try {
