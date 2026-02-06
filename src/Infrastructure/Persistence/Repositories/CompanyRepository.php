@@ -214,7 +214,7 @@ class CompanyRepository implements ICompanyRepository
         }
 
         if ($getCompanyFilterDto->name) {
-            $query->where('c.name', 'like', '%' . $getCompanyFilterDto->name . '%');
+            $query->where('c.fantasy_name', 'like', '%' . $getCompanyFilterDto->name . '%');
         }
 
         return $query;
